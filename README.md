@@ -5,3 +5,4 @@ __Name:__
 
 __Computing ID:__
 
+# Note about our questoinnaire answers. We initially wanted to collect anonymous data as it would provide more honest responses. We didn't realize that the instructions required the participants names ot be recorded. As a result, we're missing a few of the initial respodent's names. 
