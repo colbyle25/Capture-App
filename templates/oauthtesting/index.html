@@ -1,0 +1,15 @@
+{% load socialaccount %}
+{% providers_media_js %}
+
+<html>
+  <head>
+    <title>OAuth testing</title>
+  </head>
+  <body>
+    <h3>Welcome, {{ user.username }}</h3>
+    <p>Your email is {{ user.email }} and you are{% if not user.is_superuser %} not{% endif %} an admin.
+    </p>
+    <br />
+    <button><a href="{% url 'logout' %}">Logout</a></button>
+  </body>
+</html>
