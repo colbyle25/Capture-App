@@ -1,0 +1,59 @@
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/index_style.css' %}">
+
+{% load socialaccount %}
+{% providers_media_js %}
+
+<html>
+  <head>
+    <title>OAuth testing</title>
+  </head>
+
+  <body>
+
+    <nav class = "navbar navbar-expand-lg bg-dark">
+      <ul class="navbar-nav">
+          {% if user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Admin</a>
+            </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link navbar-text" href="{% url 'login' %}">Account</a>
+          </li>
+        </ul>
+    </nav>
+
+    <div class = "welcome-div">
+      <h3 class="welcome-text">Welcome, {{ user.username }}</h3>
+        <p class="welcome-text">Your email is {{ user.email }} and you are{% if not user.is_superuser %} not{% endif %} an admin.
+      </p>
+    </div>
+
+    <br />
+
+    <div class="welcome-div">
+        <button class="logout-button text-uppercase"><a href="{% url 'logout' %}">Logout</a></button>
+    </div>
+
+    <footer class = 'footer footer-styling'>
+      <div class = "text-center">
+          <p>
+              Copyright 2023
+          </p>
+          <p>
+              This is the ouathtesting for the capture app.
+          </p>
+      </div>
+    </footer>
+
+  </body>
+</html>
