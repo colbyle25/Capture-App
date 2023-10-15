@@ -33,7 +33,24 @@ body{
 .welcome-div{
     padding-top: 5vh;
     text-align: center;
-    margin: flex;
+    margin: auto;
+}
+
+
+.account-table-div{
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 50vh;
+    padding-top: 5vh;
+}
+
+.account-table th, .account-table td {
+    border: 1px solid black;
+    padding: 1vh;
+    /*padding-left: 15vh;
+    padding-right: 15vh;*/
 }
 
 .welcome-text{
@@ -44,8 +61,32 @@ body{
     padding: 0;
 }
 
-.hi{
-    color:red;
+.account-table-title{
+    font-family: 'Lato';
+    font-size: 1.5em;
+    text-align: center;
+    font-style: bolder;
+    padding-bottom: 2vh;
+}
+
+.account-info-th-text{
+    font-family: 'Lato';
+    font-size: 1.2em;
+    text-align: center;
+    font-style: bolder;
+}
+
+.account-info-text{
+    font-family: 'Lato';
+    font-size: 1em;
+    text-align: center;
+}
+
+.button{
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
 
 .logout-button {
