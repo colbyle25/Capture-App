@@ -91,6 +91,8 @@ body{
 
 .logout-button {
     margin: auto;
+    text-decoration: none;
+    text-transform: uppercase;
 
     font-family: 'Lato';
     font-size: 1.2em;
@@ -100,6 +102,6 @@ body{
 
     font-size: 1em;
     padding: 1em 1em;
-    color: #545454;
+    color:#545454;
     background-color: #ffffff;
 }

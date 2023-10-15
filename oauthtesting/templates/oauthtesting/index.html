@@ -24,7 +24,10 @@
             </li>
             {% endif %}
             <li class="nav-item">
-                <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Home</a>
+              <a class="nav-link navbar-text" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link navbar-text" href="{% url 'login' %}">Account</a>
@@ -71,7 +74,9 @@
 
 
     <div class="welcome-div">
-        <button class="logout-button text-uppercase"><a href="{% url 'logout' %}">Logout</a></button>
+        <a href="{% url 'logout' %}">
+            <button class=" logout-button">Logout</button>
+        </a>
     </div>
 
 

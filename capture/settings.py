@@ -183,3 +183,5 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     }
 }
+
+GOOGLE_MAPS_API_KEY = 'AIzaSyCHO1XcQLlUn6V7sRyRzKDzrzBGl7h97F0'
