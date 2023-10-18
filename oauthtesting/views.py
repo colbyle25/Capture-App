@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import logout
 from .forms import AccountForm
 from .models import Account
-
+from django.conf import settings
 # Create your views here.
 
 def home(request):
@@ -21,6 +21,7 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
 
+
 def profile_view(request):
   if request.method == 'POST':
     form = AccountForm(request.POST, request.FILES)
@@ -35,3 +36,8 @@ def profile_view(request):
   else:
     form = AccountForm()
     return render(request, 'oauthtesting/profile.html', {'form': form})
+
+def map(request):
+    api_key = settings.GOOGLE_MAPS_API_KEY
+    return render(request, 'oauthtesting/map.html', {'api_key': api_key})
+

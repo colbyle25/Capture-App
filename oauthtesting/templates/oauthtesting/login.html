@@ -1,0 +1,67 @@
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/login_style.css' %}">
+
+{% load socialaccount %}
+{% providers_media_js %}
+
+<html>
+    <head>
+        <title>Log in</title>
+    </head>
+
+    <body>
+        <nav class = "navbar navbar-expand-lg bg-dark">
+          <ul class="navbar-nav">
+              {% if user.is_superuser %}
+              <li class="nav-item">
+                  <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Admin</a>
+              </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link navbar-text" href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link navbar-text" href="{% provider_login_url 'google' %}">Account</a>
+              </li>
+          </ul>
+      </nav>
+
+      <div class="login-div">
+          <h1 class = "login-title">Welcome to Capture [idk what to name this app yet]</h1>
+          {# EXAMPLE PROMO IMAGE #}
+          <img class = "promo-img" src="https://media.wired.com/photos/59269cd37034dc5f91bec0f1/master/w_2560%2Cc_limit/GoogleMapTA.jpg"></img>
+          <button class = "login-button"> Login With Google
+              <a href="{% provider_login_url 'google' %}">Login with Google</a>
+          </button>
+
+          <h3 class="info-h3">Compete with your Friends</h3>
+          <p class="info-p">Build your Capture Score by completing daily missions and interacting with landmarks!</p>
+
+          <h3 class="info-h3">Leave your Mark</h3>
+          <p class="info-p">Leave text and image messages at landmarks for others to discover!</p>
+
+          <h3 class="info-h3">Explore your Surroundings</h3>
+          <p class="info-p">Capture marks major landmarks in your locality and encourages you to get moving in a capture-the-flag-style game.</p>
+      </div>
+
+      <footer class = 'footer footer-styling'>
+        <div class = "text-center">
+            <p>
+                Copyright 2023
+            </p>
+            <p>
+                This is the ouathtesting for the capture app.
+            </p>
+        </div>
+      </footer>
+
+    </body>
+</html>

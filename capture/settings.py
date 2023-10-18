@@ -49,9 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'oauthtesting',
-
+    'bootstrap5',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -174,7 +173,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SITE_ID = 2
+SITE_ID = 3
 
 SOCIALACCOUNT_PROVIDERS = {
     'google' : {
@@ -201,3 +200,5 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     }
 }
+
+GOOGLE_MAPS_API_KEY = 'AIzaSyCHO1XcQLlUn6V7sRyRzKDzrzBGl7h97F0'
