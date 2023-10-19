@@ -4,4 +4,4 @@ from .models import Account
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = ('username', 'points', 'bio', 'picture')
+        fields = ('bio', 'picture')

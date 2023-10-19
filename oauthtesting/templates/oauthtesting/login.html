@@ -38,9 +38,7 @@
           <h1 class = "login-title">Welcome to Capture [idk what to name this app yet]</h1>
           {# EXAMPLE PROMO IMAGE #}
           <img class = "promo-img" src="https://media.wired.com/photos/59269cd37034dc5f91bec0f1/master/w_2560%2Cc_limit/GoogleMapTA.jpg"></img>
-          <button class = "login-button"> Login With Google
-              <a href="{% provider_login_url 'google' %}">Login with Google</a>
-          </button>
+          <button class = "login-button" onclick="window.location.href='{% provider_login_url 'google' %}'"> Login With Google</button>
 
           <h3 class="info-h3">Compete with your Friends</h3>
           <p class="info-p">Build your Capture Score by completing daily missions and interacting with landmarks!</p>
