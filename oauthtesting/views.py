@@ -5,7 +5,9 @@ from django.contrib.auth import logout
 from django.contrib.messages import *
 from .forms import AccountForm
 from .models import Account
+from .models import POI
 from django.conf import settings
+import json
 
 
 # Create your views here.
@@ -57,4 +59,17 @@ def profile_view(request):
 
 def map(request):
     api_key = settings.GOOGLE_MAPS_API_KEY
-    return render(request, 'oauthtesting/map.html', {'api_key': api_key})
+    pois = POI.objects.all()
+
+    pois_list = []
+    for poi in pois:
+        poi_data = {
+            'latitude': float(poi.latitude),
+            'longitude': float(poi.longitude),
+            'name': poi.name,
+        }
+        pois_list.append(poi_data)
+
+    pois_json = json.dumps(pois_list)
+
+    return render(request, 'oauthtesting/map.html', {'api_key': api_key, 'pois': pois_json})

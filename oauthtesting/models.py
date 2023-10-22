@@ -51,6 +51,7 @@ class Friends(models.Model):
 
 # Point of Interest
 class POI(models.Model):
+    name = models.CharField(max_length=100, default="A Point of Interest")
     pid = models.IntegerField(primary_key=True)
     time = models.DateTimeField()
     points = models.IntegerField(default=DEFAULT_POINTS)
