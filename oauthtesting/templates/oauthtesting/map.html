@@ -32,25 +32,8 @@
 
         <div id="UVA_MAP" class="map"></div>
 
-        <script>
-            function initMap() {
-                var map = new google.maps.Map(document.getElementById('UVA_MAP'), {
-                    center: {lat: 38.03358840942383, lng: -78.50801849365234},
-                    zoom: 16
-                });
-        
-                var pois = {{ pois|safe }};
-
-                pois.forEach(function(poi) {
-                    var marker = new google.maps.Marker({
-                        position: { lat: parseFloat(poi.latitude), lng: parseFloat(poi.longitude) },
-                        map: map,
-                        title: poi.name,
-                        icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/archive/d/dd/20170128002300%21University_of_Virginia_Rotunda_logo.svg/118px-University_of_Virginia_Rotunda_logo.svg.png',
-                    });
-                });
-            }
-        </script>
+        <script> var pois = {{pois|safe}} </script>
+        <script src = "{% static 'js/map.js' %}"></script>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHO1XcQLlUn6V7sRyRzKDzrzBGl7h97F0&callback=initMap&libraries=maps,marker&v=beta"></script>
 
         <footer class = 'footer footer-styling'>

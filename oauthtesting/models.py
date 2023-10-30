@@ -13,7 +13,7 @@ COORDINATE_DECIMAL_PLACES = 6  # How many digits after the decimal place should 
 IMAGE_FILE_LOCATION = 'images'
 DRAWING_FILE_LOCATION = 'drawing'
 
-DEFAULT_POINTS = 1  # How many points should a point of interest (POI) give?
+DEFAULT_POINTS = 200  # How many points should a point of interest (POI) give?
 
 # https://stackoverflow.com/questions/51570254/django-change-name-of-image-from-imagefield
 # Referenced to figure out how to access the username (line 26 and method account_url)
