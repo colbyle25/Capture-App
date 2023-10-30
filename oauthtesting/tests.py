@@ -1,6 +1,7 @@
 from django.test import TestCase
 from oauthtesting.models import Account, Friends, POI, Captured, Message, TextMessage, Like
-
+from datetime import datetime
+import datetime as dt
 
 # Create your tests here.
 
@@ -14,6 +15,10 @@ class ExampleTestCase(TestCase):
 
         Friends.objects.create(user1=user1, user2=user2)
         Friends.objects.create(user1=user3, user2=user1)
+
+        TextMessage.objects.create(username=user1, time=datetime.now(),
+                                   longitude=0, latitude=0, text="This is a message")
+
 
     def test_account(self):
         account = Account.objects.get(username="test")
@@ -38,3 +43,22 @@ class ExampleTestCase(TestCase):
         user4 = Account.objects.get(username="test4")
         friend = Friends.objects.filter(user1=user4) | Friends.objects.filter(user2=user4)
         self.assertEqual(len(friend), 0)
+
+    def test_text(self):
+        user1 = Account.objects.get(username="test")
+        text = TextMessage.objects.get(username=user1)
+        self.assertEqual(text.text, "This is a message")
+
+    def test_two_text(self):
+        user2 = Account.objects.get(username="test2")
+        t = datetime.now()
+        TextMessage.objects.create(username=user2, time=t,
+                                   longitude=0, latitude=0, text="This is another message")
+        TextMessage.objects.create(username=user2, time=t - dt.timedelta(seconds=15),
+                                   longitude=0, latitude=0, text="This is another another message")
+        text = TextMessage.objects.get(username=user2, time=t)
+        text2 = TextMessage.objects.get(username=user2, time=(t - dt.timedelta(seconds=15)))
+
+        self.assertEqual(text.text, "This is another message")
+        self.assertEqual(text2.text, "This is another another message")
+

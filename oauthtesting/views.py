@@ -78,4 +78,10 @@ def map(request):
 
     pois_json = json.dumps(pois_list)
 
-    return render(request, 'oauthtesting/map.html', {'api_key': api_key, 'pois': pois_json})
+    account = Account.objects.filter(username=request.user)
+    if account.exists():
+        account = account.first()
+    else:
+        account = None
+
+    return render(request, 'oauthtesting/map.html', {'api_key': api_key, 'pois': pois_json, 'account': account})
