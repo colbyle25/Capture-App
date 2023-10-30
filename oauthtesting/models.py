@@ -53,6 +53,7 @@ class Friends(models.Model):
 class POI(models.Model):
     name = models.CharField(max_length=100, default="A Point of Interest")
     pid = models.IntegerField(primary_key=True)
+    img = models.ImageField(upload_to='images/', default='images/rotunda.jpeg')
     time = models.DateTimeField()
     points = models.IntegerField(default=DEFAULT_POINTS)
     longitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,

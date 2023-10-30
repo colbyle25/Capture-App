@@ -33,17 +33,28 @@ function initMap() {
         map.setCenter(location);
     }
 
-    
-
     /*watchPosition should continually call an updatePosition as the user moves around*/
     if (navigator.geolocation) {
-        var watchId = navigator.geolocation.watchPosition(updateLocation, function (error) {
-            console.error('Error getting user location:', error);
-        });
+        navigator.geolocation.getCurrentPosition(
+            function (position) { //set the initial position before watching for changes
+                updateLocation(position);
+                var watchId = navigator.geolocation.watchPosition(updateLocation, 
+                    function (error) {
+                        console.error('Error getting user location:', error);
+                    }
+                );
+            }, 
+            function (error) {
+                console.error('Error getting user location:', error);
+            },
+            {
+                timeout: 10000 //10 seconds to find the initial location before throwing error
+            }
+        );
     } else {
         var errorWindow = new google.maps.InfoWindow();
         errorWindow.setPosition(locationMarker.getPosition());
-        errorWindow.setContent('Insufficient location/geolocaiton permissions.');
+        errorWindow.setContent('Insufficient location/geolocation permissions.');
         errorWindow.open(map);
     }
 
@@ -51,6 +62,8 @@ function initMap() {
     pois.forEach(function(poi) {
         console.log(poi.name)
         console.log(poi.points)
+        console.log(poi.pid)
+        console.log(poi.latitude)
 
         var marker = new google.maps.Marker({
             position: { lat: parseFloat(poi.latitude), lng: parseFloat(poi.longitude) },
@@ -62,9 +75,12 @@ function initMap() {
                 scaledSize: new google.maps.Size(50, 50)
             }
         });
-
+    
         var markerWindow = new google.maps.InfoWindow({
-            content: poi.points + ' points'
+            maxWidth: 200,
+            content: '<img style = "width: 95%; display: flex; margin: auto;" src= "' + poi.img + '"></img>'
+                    +'<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: green; font-size: 1 em;">' + 'points: ' + poi.points + '</div>'
+                    +'<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + 'last message: ' + poi.time + '</div>'
         });
     
         marker.addListener('click', function () {

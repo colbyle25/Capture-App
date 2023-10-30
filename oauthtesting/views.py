@@ -61,9 +61,15 @@ def map(request):
     api_key = settings.GOOGLE_MAPS_API_KEY
     pois = POI.objects.all()
 
+    time_format = ' %I:%H:%M %p %m-%d-%Y'
+
     pois_list = []
     for poi in pois:
         poi_data = {
+            'pid':  poi.pid,
+            'points': poi.points,
+            'img': poi.img.url,
+            'time': poi.time.strftime(time_format),
             'latitude': float(poi.latitude),
             'longitude': float(poi.longitude),
             'name': poi.name,
