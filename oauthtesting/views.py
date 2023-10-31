@@ -99,3 +99,8 @@ def lookup(request):
         else:
             account = None
         return render(request, 'oauthtesting/lookup.html', {'account': account})
+
+def leaderboard(request):
+    accounts = Account.objects.all().order_by('-points')[:5]
+    return render(request, 'oauthtesting/leaderboard.html', {'accounts': accounts})
+

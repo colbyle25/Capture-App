@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block html %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/leaderboard_style.css' %}">
+
+{% load socialaccount %}
+{% providers_media_js %}
+
+<div class="m-3">
+        <table class="account-table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for account in accounts %}
+                <tr class = "account-info-th-text">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ account.username }}</td>
+                    <td>{{ account.points }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+{% endblock %}
