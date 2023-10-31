@@ -39,6 +39,8 @@ def user_logout(request):
 
 
 def profile_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
     if request.method == 'POST':
         form = AccountForm(request.POST, request.FILES)
         if form.is_valid():
