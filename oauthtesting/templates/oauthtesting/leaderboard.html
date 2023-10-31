@@ -7,23 +7,57 @@
 {% load socialaccount %}
 {% providers_media_js %}
 
-<div class="m-3">
-        <table class="account-table">
+<div class="m-3 account-table-div">
+        <h3 class="account-table-title">Leaderboard</h3>
+        <table class="table account-table">
             <thead>
-                <tr>
-                    <th scope="col">#</th>
+                <tr class = "account-info-th-text">
+                    <th scope="col">Rank</th>
                     <th scope="col">Username</th>
                     <th scope="col">Points</th>
                 </tr>
             </thead>
             <tbody>
-            {% for account in accounts %}
+            {% for acc in accounts %}
+                {% if forloop.counter == 1 %}
+                <tr style="color:gold">
+                {% elif forloop.counter == 2 %}
+                <tr style="color:silver">
+                {% elif forloop.counter == 3 %}
+                <tr style="color:brown">
+                {% else %}
                 <tr class = "account-info-th-text">
+                {% endif %}
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ account.username }}</td>
-                    <td>{{ account.points }}</td>
+                    {% if placement == forloop.counter %}
+                        <td>
+                            <strong>
+                                <a href="{% url 'lookup' %}?lookup={{ acc.username }}" style="color:inherit">{{ acc.username }}</a>
+                            <!-- Left arrow symbol -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"></path>
+                            </svg>
+                        </strong></td>
+                        <td><strong>{{ acc.points }}</strong></td>
+                    {% else %}
+                    <td><a href="{% url 'lookup' %}?lookup={{ acc.username }}" style="color:inherit">{{ acc.username }}</a></td>
+                        <td>{{ acc.points }}</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
+            {% if account %}
+                <tr class = "account-info-th-text">
+                    <th scope="row">{{ placement }}</th>
+                    <td><strong>
+                        <a href="{% url 'lookup' %}?lookup={{ account.username }}" style="color:inherit">{{ account.username }}</a>
+                        <!-- Left arrow symbol -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"></path>
+                        </svg>
+                    </strong></td>
+                    <td><strong>{{ account.points }}</strong></td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
 </div>

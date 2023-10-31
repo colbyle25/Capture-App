@@ -82,3 +82,32 @@ body{
     font-size: 1.2em;
     margin: auto;
 }
+
+.account-table-div{
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 50vh;
+    padding-top: 5vh;
+}
+
+.account-table th, .account-table td {
+    border: 1px solid black;
+    padding: 1vh;
+    /*padding-left: 15vh;
+    padding-right: 15vh;*/
+}
+
+.account-info-th-text{
+    font-family: 'Lato';
+    font-size: 1.2em;
+    text-align: center;
+    font-style: bolder;
+}
+
+.account-info-text{
+    font-family: 'Lato';
+    font-size: 1em;
+    text-align: center;
+}

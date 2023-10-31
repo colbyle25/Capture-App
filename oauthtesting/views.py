@@ -100,7 +100,18 @@ def lookup(request):
             account = None
         return render(request, 'oauthtesting/lookup.html', {'account': account})
 
+
 def leaderboard(request):
-    accounts = Account.objects.all().order_by('-points')[:5]
-    return render(request, 'oauthtesting/leaderboard.html', {'accounts': accounts})
+    accounts = Account.objects.all().order_by('-points')
+    placement = -1
+    account = None
+    for i in range(len(accounts)):
+        if str(accounts[i].username) == str(request.user):
+            placement = i + 1
+            account = accounts[i]
+            if i < 5:  # Don't render the user in two places
+                account = None
+            break
+    context = {'accounts': accounts[:5], 'account': account, 'placement': placement}
+    return render(request, 'oauthtesting/leaderboard.html', context)
 

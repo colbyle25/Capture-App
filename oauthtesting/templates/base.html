@@ -45,7 +45,6 @@ Anything outside of the block will not work, so keep it all inside
                 </li>
             </ul>
             <form class="d-flex mb-2 mb-lg-0" method="get" action="{% url 'lookup' %}">
-                  {% csrf_token %}
                 <input class="form-control me-2" type="text" placeholder="Search Accounts..." aria-label="Search Accounts..." name="lookup">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
