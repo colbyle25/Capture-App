@@ -13,6 +13,8 @@ import json
 # Create your views here.
 
 def home(request):
+    if request.method == 'SEARCH':
+        print("Search!")
     if request.user.is_authenticated:
         account = Account.objects.filter(username=request.user)
         if account.exists():
@@ -85,3 +87,15 @@ def map(request):
         account = None
 
     return render(request, 'oauthtesting/map.html', {'api_key': api_key, 'pois': pois_json, 'account': account})
+
+
+def lookup(request):
+    if request.method == 'GET':
+        info = request.GET.get('lookup')
+        print("user: " + info)
+        account = Account.objects.filter(username=info)
+        if account.exists():
+            account = account.first()
+        else:
+            account = None
+        return render(request, 'oauthtesting/lookup.html', {'account': account})

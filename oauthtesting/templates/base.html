@@ -19,23 +19,38 @@ Anything outside of the block will not work, so keep it all inside
 {% bootstrap_messages %}
 
 <body>
-<nav class = "navbar navbar-expand-lg bg-dark">
-        <ul class="navbar-nav">
-            {% if user.is_superuser %}
-            <li class="nav-item">
-                <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Admin</a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link navbar-text" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link navbar-text" href="{% url 'login' %}">Account</a>
-            </li>
-        </ul>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse"  id="navbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Admin</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                  <a class="nav-link navbar-text" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link navbar-text" href="{% url 'login' %}">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link navbar-text" href="{% url 'login' %}">Leaderboard</a>
+                </li>
+            </ul>
+            <form class="d-flex mb-2 mb-lg-0" method="get" action="{% url 'lookup' %}">
+                  {% csrf_token %}
+                <input class="form-control me-2" type="text" placeholder="Search Accounts..." aria-label="Search Accounts..." name="lookup">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
 </body>
 {% block html %}{% endblock %}
