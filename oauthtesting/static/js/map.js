@@ -1,3 +1,4 @@
+var map;
 function initMap() {
 
     account_image = document.images;
@@ -6,7 +7,7 @@ function initMap() {
         img = account_image[0].src;
     }
 
-    var map = new google.maps.Map(document.getElementById('UVA_MAP'), {
+    map = new google.maps.Map(document.getElementById('UVA_MAP'), {
         center: {lat: 38.03358840942383, lng: -78.50801849365234}, //default center is central grounds
         zoom: 16,
         styles: [    
@@ -94,5 +95,15 @@ function initMap() {
         marker.addListener('click', function () {
             markerWindow.open(map, marker);
         });
+    });
+    google.maps.event.addListener(map, 'click', function(event) {
+        placeMarker(event.latLng);
+    });
+}
+function placeMarker(location) {
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        draggable: true  // Allows users to drag and adjust the marker position if desired
     });
 }
