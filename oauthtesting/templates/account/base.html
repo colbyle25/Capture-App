@@ -1,8 +1,6 @@
+{% extends "base.html" %}
+{% block html %}
 {% load i18n %}
-{% load bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-{% bootstrap_messages %}
 
 {% load static %}
 <link rel="stylesheet" href="{% static 'account/base.css' %}">
@@ -20,26 +18,7 @@
     {% endblock extra_head %}
   </head>
   <body>
-    <nav class = "navbar navbar-expand-lg bg-dark">
-          <ul class="navbar-nav">
-              {% if user.is_superuser %}
-              <li class="nav-item">
-                  <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Admin</a>
-              </li>
-              {% endif %}
-              <li class="nav-item">
-                <a class="nav-link navbar-text" href="{% url 'home' %}">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link navbar-text" href="{% provider_login_url 'google' %}">Account</a>
-              </li>
-          </ul>
-      </nav>
-
-    <div class="m-3"> <!-- No idea what blocks are, but if you want to modify anything, divs like this one works -->
+    <div class="m-3"> <!-- I know what blocks are now, ask Jared if you have questions -->
 
     {% block body %}
 
@@ -76,3 +55,4 @@
     </div>
   </body>
 </html>
+{% endblock %}

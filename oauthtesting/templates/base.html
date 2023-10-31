@@ -4,7 +4,7 @@ This'll help keep things DRY
 To add this to an html page (replace the [ with {):
 ============================
 [% extends "base.html" %]
-[% block content %]
+[% block html %]
 
 html stuff
 
@@ -38,4 +38,4 @@ Anything outside of the block will not work, so keep it all inside
         </ul>
     </nav>
 </body>
-{% block content %}{% endblock %}
+{% block html %}{% endblock %}
