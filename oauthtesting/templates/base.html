@@ -1,13 +1,24 @@
-{% extends "base.html" %}
-{% block content %}
+<!--
+This is the base for any page with the navbar and other things.
+This'll help keep things DRY
+To add this to an html page (replace the [ with {):
+============================
+[% extends "base.html" %]
+[% block content %]
 
-{% load static %}
-<link rel="stylesheet" href="{% static 'oauthtesting/profile_style.css' %}">
+html stuff
 
-{% load socialaccount %}
-{% providers_media_js %}
+[% endblock %]
+============================
+Anything outside of the block will not work, so keep it all inside
+ -->
 
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
 
+<body>
 <nav class = "navbar navbar-expand-lg bg-dark">
         <ul class="navbar-nav">
             {% if user.is_superuser %}
@@ -26,19 +37,5 @@
             </li>
         </ul>
     </nav>
-
-
-<div class="m-3">
-<h3 class="">{{ user.username }}</h3>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-    {{ form.as_p }}
-<button type="submit">Upload</button>
-</form>
-
-{% if account %}  <h3>Account created : {{account.username}}</h3>
- <img src="{{ account.picture.url}}" alt="connect" style="max-height:300px">
-{% endif %}
-</div>
-
-{% endblock %}
+</body>
+{% block content %}{% endblock %}

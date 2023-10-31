@@ -1,7 +1,5 @@
-{% load bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-{% bootstrap_messages %}
+{% extends "base.html" %}
+{% block content %}
 
 {% load static %}
 <link rel="stylesheet" href="{% static 'oauthtesting/index_style.css' %}">
@@ -15,25 +13,6 @@
   </head>
 
   <body>
-
-    <nav class = "navbar navbar-expand-lg bg-dark">
-        <ul class="navbar-nav">
-            {% if user.is_superuser %}
-            <li class="nav-item">
-                <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Admin</a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link navbar-text" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link navbar-text" href="{% url 'login' %}">Account</a>
-            </li>
-        </ul>
-    </nav>
 
     <div class = "welcome-div">
         <h3 class="welcome-text">Welcome, {{ user.username }}</h3>
@@ -112,3 +91,4 @@
 
   </body>
 </html>
+{% endblock %}
