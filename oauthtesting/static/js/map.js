@@ -1,3 +1,8 @@
+var map;
+var markers = [];
+var uniqueID = 0;
+const MAX_MARKERS = 3;
+
 function initMap() {
 
     account_image = document.images;
@@ -6,7 +11,7 @@ function initMap() {
         img = account_image[0].src;
     }
 
-    var map = new google.maps.Map(document.getElementById('UVA_MAP'), {
+    map = new google.maps.Map(document.getElementById('UVA_MAP'), {
         center: {lat: 38.03358840942383, lng: -78.50801849365234}, //default center is central grounds
         zoom: 16,
         styles: [    
@@ -95,4 +100,52 @@ function initMap() {
             markerWindow.open(map, marker);
         });
     });
+    google.maps.event.addListener(map, 'click', function(event) {
+        placeMarker(event.latLng);
+    });
+}
+function placeMarker(location) {
+    if (markers.length >= MAX_MARKERS){
+        alert("You can only place " + MAX_MARKERS + " markers at a time.");
+        return;
+    }
+
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        draggable: true  // Allows users to drag and adjust the marker position if desired
+    })
+
+    marker.id = uniqueID;
+    marker.userMessage = "";
+    uniqueID += 1;
+
+    google.maps.event.addListener(marker, "click", function (e) {
+        var contentString = generateContentString(marker, location);
+        var infoWindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+        infoWindow.open(map, marker);
+    });
+
+    markers.push(marker);
+}
+function generateContentString(marker, location) {
+    var contentString = '<div class="infoWindowContent">';
+    contentString += 'Write a Message! ' + '<br>';
+    contentString += '<textarea id="userMessage_' + marker.id + '" class="userMessageTextarea">' + marker.userMessage + '</textarea><br>';
+    contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.id + ');" value="Save">';
+    contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
+    contentString += '</div>';
+    return contentString;
+}
+
+function DeleteMarker(id) {
+    for (var i = 0; i < markers.length; i++) {
+        if (markers[i].id == id) {
+            markers[i].setMap(null);
+            markers.splice(i, 1);
+            return;
+        }
+    }
 }
