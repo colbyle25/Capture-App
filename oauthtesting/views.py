@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout
 from django.contrib.messages import *
 from .forms import AccountForm
-from .models import Account
+from .models import Account, TextMessage
 from .models import POI
 from django.conf import settings
 import json

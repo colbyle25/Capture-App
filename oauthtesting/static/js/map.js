@@ -1,7 +1,9 @@
 var map;
 var markers = [];
 var uniqueID = 0;
+var currentInfoWindow = null;
 const MAX_MARKERS = 3;
+
 
 function initMap() {
 
@@ -125,19 +127,45 @@ function placeMarker(location) {
         var infoWindow = new google.maps.InfoWindow({
             content: contentString
         });
+        if (currentInfoWindow) {
+        currentInfoWindow.close();
+    }
         infoWindow.open(map, marker);
+        currentInfoWindow = infoWindow;
     });
 
     markers.push(marker);
 }
 function generateContentString(marker, location) {
     var contentString = '<div class="infoWindowContent">';
-    contentString += 'Write a Message! ' + '<br>';
-    contentString += '<textarea id="userMessage_' + marker.id + '" class="userMessageTextarea">' + marker.userMessage + '</textarea><br>';
-    contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.id + ');" value="Save">';
+
+    if (marker.userMessage === "") { // If there's no saved message, show textarea
+        contentString += 'Write a Message! ' + '<br>';
+        contentString += '<textarea id="userMessage_' + marker.id + '" class="userMessageTextarea"></textarea><br>';
+        contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.id + ');" value="Save">';
+    } else {
+        contentString += marker.userMessage + '<br>';
+    }
+
     contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
     contentString += '</div>';
+
     return contentString;
+}
+
+function SaveMessage(id) {
+    var marker = markers.find(m => m.id === id);
+    if (marker) {
+        marker.userMessage = document.getElementById("userMessage_" + id).value
+        if (currentInfoWindow) {
+            currentInfoWindow.close();
+        }
+        var contentString = generateContentString(marker, marker.getPosition());
+        var infoWindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+        infoWindow.open(map, marker);
+    }
 }
 
 function DeleteMarker(id) {
