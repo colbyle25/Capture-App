@@ -1,13 +1,17 @@
-from django.contrib import messages
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.contrib.auth import logout
-from django.contrib.messages import *
-from .forms import AccountForm
-from .models import Account, TextMessage
-from .models import POI
-from django.conf import settings
+
+from datetime import datetime
 import json
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.http import require_http_methods
+
+from .forms import AccountForm
+from .models import Account, Message, POI
+
 
 
 # Create your views here.
@@ -115,3 +119,31 @@ def leaderboard(request):
     context = {'accounts': accounts[:5], 'account': account, 'placement': placement}
     return render(request, 'oauthtesting/leaderboard.html', context)
 
+@require_http_methods(["POST"])
+def save_marker(request):
+    data = json.loads(request.body)
+    username = Account.objects.filter(username=request.user).first()
+    message = data['message']
+    latitude = data['latitude']
+    longitude = data['longitude']
+
+    marker_message = Message.objects.create(
+        username = username,
+        message = message,
+        latitude = latitude,
+        longitude = longitude,
+        time = datetime.now()
+    )
+    return JsonResponse({'id': marker_message.id, 'status': 'success'})
+
+@require_http_methods(["DELETE"])
+def delete_marker(request, marker_id):
+    marker = get_object_or_404(Message, pk=marker_id)
+    marker.delete()
+    return JsonResponse({'status': 'success', 'message': 'Marker deleted'})
+
+@login_required
+def load_markers(request):
+    markers = Message.objects.all()
+    markers_data = list(markers.values('id', 'latitude', 'longitude', 'message'))
+    return JsonResponse(markers_data, safe=False)

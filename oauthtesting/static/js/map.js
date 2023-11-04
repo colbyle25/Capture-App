@@ -2,7 +2,9 @@ var map;
 var markers = [];
 var uniqueID = 0;
 var currentInfoWindow = null;
-const MAX_MARKERS = 3;
+// Made MAX_MARKERS 100 for now as I haven't implemented functionality for per user markers. 
+// When loading all the markers it counts them towards your total regardless of if you made them or not
+const MAX_MARKERS = 100;
 
 
 function initMap() {
@@ -105,8 +107,14 @@ function initMap() {
     google.maps.event.addListener(map, 'click', function(event) {
         placeMarker(event.latLng);
     });
+
+    // Loads the markers whenever the map is loaded
+    LoadMarkers();
 }
-function placeMarker(location) {
+
+
+
+function placeMarker(location, message, id) {
     if (markers.length >= MAX_MARKERS){
         alert("You can only place " + MAX_MARKERS + " markers at a time.");
         return;
@@ -118,9 +126,8 @@ function placeMarker(location) {
         draggable: true  // Allows users to drag and adjust the marker position if desired
     })
 
-    marker.id = uniqueID;
-    marker.userMessage = "";
-    uniqueID += 1;
+    marker.id = id;
+    marker.userMessage = message ? message : "";
 
     google.maps.event.addListener(marker, "click", function (e) {
         var contentString = generateContentString(marker, location);
@@ -136,7 +143,7 @@ function placeMarker(location) {
 
     markers.push(marker);
 }
-function generateContentString(marker, location) {
+function generateContentString(marker) {
     var contentString = '<div class="infoWindowContent">';
 
     if (marker.userMessage === "") { // If there's no saved message, show textarea
@@ -156,24 +163,81 @@ function generateContentString(marker, location) {
 function SaveMessage(id) {
     var marker = markers.find(m => m.id === id);
     if (marker) {
-        marker.userMessage = document.getElementById("userMessage_" + id).value
-        if (currentInfoWindow) {
-            currentInfoWindow.close();
-        }
-        var contentString = generateContentString(marker, marker.getPosition());
-        var infoWindow = new google.maps.InfoWindow({
-            content: contentString
+        var userMessage = document.getElementById('userMessage_' + id).value;
+        var postData = {
+            'latitude': marker.getPosition().lat(),
+            'longitude': marker.getPosition().lng(),
+            'message': userMessage
+        };
+
+        fetch('/save_marker/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF_TOKEN
+            },
+            body: JSON.stringify(postData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                marker.id = data.id;
+                marker.userMessage = userMessage;
+                if (currentInfoWindow) {
+                    currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
+                }
+            } else {
+                console.error('Failed to save marker:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
-        infoWindow.open(map, marker);
     }
 }
 
 function DeleteMarker(id) {
-    for (var i = 0; i < markers.length; i++) {
-        if (markers[i].id == id) {
-            markers[i].setMap(null);
-            markers.splice(i, 1);
-            return;
+    fetch(`/delete_marker/${id}/`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFTOKEN': CSRF_TOKEN
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Marker deleted:', data);
+        const markerToDelete = markers.find(marker => marker.id === id);
+        if (markerToDelete) {
+            markerToDelete.setMap(null);
+        }
+        markers = markers.filter(marker => marker.id !== id);
+    })
+    .catch(error => {
+        console.error('Error during deletion:', error);
+    });
+}
+
+function LoadMarkers() {
+    fetch('/load_markers/')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        data.forEach(Message => {
+            const position = new google.maps.LatLng(Message.latitude, Message.longitude);
+            placeMarker(position, Message.message, Message.id);
+        });
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
 }
