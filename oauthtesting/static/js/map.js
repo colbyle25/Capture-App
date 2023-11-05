@@ -2,8 +2,12 @@ var map;
 var markers = [];
 var currentMarker;
 var currentInfoWindow = null;
+var admView = false;
+
+
 
 function initMap() {
+    fetch("/amiadmin/").then(response => response.json()).then(data => {admView = data.admin;});
     console.log("initializing");
     account_image = document.images;
     img = 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b91ae6af-3261-4f95-990e-4896507279ad/d5jzig1-3bd05d51-8646-443c-9030-600bd5eaf473.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2I5MWFlNmFmLTMyNjEtNGY5NS05OTBlLTQ4OTY1MDcyNzlhZFwvZDVqemlnMS0zYmQwNWQ1MS04NjQ2LTQ0M2MtOTAzMC02MDBiZDVlYWY0NzMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.js96fjW1bMXaPF6fzpgHOc6xbsL7CsSqU1Nit2OEGwA';
@@ -119,9 +123,12 @@ function placeNewMarker(location) {
         currentMarker = new google.maps.Marker({
             position: location,
             map: map,
-            draggable: true  // Allows users to drag and adjust the marker position if desired
+            draggable: true,  // Allows users to drag and adjust the marker position if desired
+            // content: pinUnapproved,
+            icon: {url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) },
         })
         currentMarker.userMessage = "";
+        currentMarker.approved = false;
     }
 
     google.maps.event.addListener(currentMarker, "click", function (e) {
@@ -130,8 +137,8 @@ function placeNewMarker(location) {
             content: contentString
         });
         if (currentInfoWindow) {
-        currentInfoWindow.close();
-    }
+            currentInfoWindow.close();
+        }
         infoWindow.open(map, currentMarker);
         currentInfoWindow = infoWindow;
     });
@@ -140,18 +147,21 @@ function placeNewMarker(location) {
 }
 
 // Method for placing database markers.
-function placeMarker(location, message, id, likes, liked) {
+function placeMarker(location, message, id, likes, liked, approved) {
     console.log("Placing from db", id);
     var marker = new google.maps.Marker({
         position: location,
         map: map,
-        draggable: true  // Allows users to drag and adjust the marker position if desired
+        draggable: false,
+        // content: approved ? pinApproved : pinUnapproved,
     })
+    if (!approved) marker.setIcon({url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) });
 
     marker.id = id;
     marker.userMessage = message ? message : "";
     marker.likes = likes;
     marker.liked = liked;
+    marker.approved = approved;
 
     google.maps.event.addListener(marker, "click", function (e) {
         var contentString = generateContentString(marker, location);
@@ -159,8 +169,8 @@ function placeMarker(location, message, id, likes, liked) {
             content: contentString
         });
         if (currentInfoWindow) {
-        currentInfoWindow.close();
-    }
+            currentInfoWindow.close();
+        }
         infoWindow.open(map, marker);
         currentInfoWindow = infoWindow;
     });
@@ -224,6 +234,64 @@ function Unlike(id) {
     });
 }
 
+function Approve(id) {
+    fetch(`/approve/${id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFTOKEN': CSRF_TOKEN
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Message approved:', data);
+        var marker = markers.find(marker => marker.id === id);
+        marker.approved = true;
+        // marker.content = pinApproved;
+        marker.setIcon();
+        if (currentInfoWindow) {
+            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
+        }
+    })
+    .catch(error => {
+        console.error('Error during approval:', error);
+    });
+}
+
+function Unapprove(id) {
+    fetch(`/unapprove/${id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFTOKEN': CSRF_TOKEN
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Message unapproved:', data);
+        var marker = markers.find(marker => marker.id === id);
+        marker.approved = false;
+        // marker.content = pinUnapproved;
+        marker.setIcon({url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) });
+        if (currentInfoWindow) {
+            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
+        }
+    })
+    .catch(error => {
+        console.error('Error during approval:', error);
+    });
+}
+
 function generateContentString(marker) {
     var contentString = '<div class="infoWindowContent">';
 
@@ -241,6 +309,16 @@ function generateContentString(marker) {
         } else {
             contentString += '<input type="button" class="saveButton" onclick="Unlike(' + marker.id + ');" value="Unlike">';
         }
+        contentString += '<br>';
+        if (admView) {
+            if (!marker.approved) {
+                contentString += '<input type="button" class="saveButton" onclick="Approve(' + marker.id + ');" value="Approve">';
+            } else {
+                contentString += '<input type="button" class="saveButton" onclick="Unapprove(' + marker.id + ');" value="Unapprove">';
+            }
+            contentString += '<br>';
+        }
+        contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
         contentString += '<br>';
     }
 
@@ -331,10 +409,11 @@ function LoadMarkers() {
     .then(data => {
         data.forEach(Message => {
             const position = new google.maps.LatLng(Message.latitude, Message.longitude);
-            placeMarker(position, Message.message, Message.id, Message.likes, Message.liked);
+            placeMarker(position, Message.message, Message.id, Message.likes, Message.liked, Message.approved);
         });
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
     });
 }
+
