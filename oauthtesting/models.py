@@ -77,7 +77,7 @@ class Captured(models.Model):
 class Message(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.ForeignKey(Account, on_delete=models.CASCADE)
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField()#auto_now_add=True)
     longitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                     decimal_places=COORDINATE_DECIMAL_PLACES)
     latitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,

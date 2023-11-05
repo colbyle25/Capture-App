@@ -1,5 +1,6 @@
 from django.test import TestCase
 from oauthtesting.models import Account, Friends, POI, Captured, Message, TextMessage, Like
+from django.utils import timezone
 from datetime import datetime
 import datetime as dt
 
@@ -16,8 +17,8 @@ class ExampleTestCase(TestCase):
         Friends.objects.create(user1=user1, user2=user2)
         Friends.objects.create(user1=user3, user2=user1)
 
-        TextMessage.objects.create(username=user1, time=datetime.now(),
-                                   longitude=0, latitude=0, text="This is a message")
+        TextMessage.objects.create(username=user1, time=timezone.now(),
+                                   longitude=0, latitude=0, message="This is a message")
 
 
     def test_account(self):
@@ -47,18 +48,18 @@ class ExampleTestCase(TestCase):
     def test_text(self):
         user1 = Account.objects.get(username="test")
         text = TextMessage.objects.get(username=user1)
-        self.assertEqual(text.text, "This is a message")
+        self.assertEqual(text.message, "This is a message")
 
     def test_two_text(self):
         user2 = Account.objects.get(username="test2")
-        t = datetime.now()
+        t = timezone.now()
         TextMessage.objects.create(username=user2, time=t,
-                                   longitude=0, latitude=0, text="This is another message")
-        TextMessage.objects.create(username=user2, time=t - dt.timedelta(seconds=15),
-                                   longitude=0, latitude=0, text="This is another another message")
+                                   longitude=0, latitude=0, message="This is another message")
+        TextMessage.objects.create(username=user2, time=t - timezone.timedelta(seconds=15),
+                                   longitude=0, latitude=0, message="This is another another message")
         text = TextMessage.objects.get(username=user2, time=t)
-        text2 = TextMessage.objects.get(username=user2, time=(t - dt.timedelta(seconds=15)))
+        text2 = TextMessage.objects.get(username=user2, time=(t - timezone.timedelta(seconds=15)))
 
-        self.assertEqual(text.text, "This is another message")
-        self.assertEqual(text2.text, "This is another another message")
+        self.assertEqual(text.message, "This is another message")
+        self.assertEqual(text2.message, "This is another another message")
 
