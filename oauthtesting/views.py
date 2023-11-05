@@ -3,6 +3,7 @@ import json
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -117,6 +118,7 @@ def leaderboard(request):
     context = {'accounts': accounts[:5], 'account': account, 'placement': placement}
     return render(request, 'oauthtesting/leaderboard.html', context)
 
+
 @require_http_methods(["POST"])
 def save_marker(request):
     data = json.loads(request.body)
@@ -126,19 +128,21 @@ def save_marker(request):
     longitude = data['longitude']
 
     marker_message = TextMessage.objects.create(
-        username = username,
-        message = message,
-        latitude = latitude,
-        longitude = longitude,
-        time = datetime.now()
+        username=username,
+        message=message,
+        latitude=latitude,
+        longitude=longitude,
+        time=datetime.now()
     )
     return JsonResponse({'id': marker_message.id, 'status': 'success'})
+
 
 @require_http_methods(["DELETE"])
 def delete_marker(request, marker_id):
     marker = get_object_or_404(TextMessage, pk=marker_id)
     marker.delete()
     return JsonResponse({'status': 'success', 'message': 'Marker deleted'})
+
 
 @login_required
 def load_markers(request):

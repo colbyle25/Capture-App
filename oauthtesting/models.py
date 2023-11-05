@@ -82,7 +82,6 @@ class Message(models.Model):
                                     decimal_places=COORDINATE_DECIMAL_PLACES)
     latitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                    decimal_places=COORDINATE_DECIMAL_PLACES)
-    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.username}:({self.longitude}, {self.latitude})"
@@ -90,6 +89,7 @@ class Message(models.Model):
 
 class TextMessage(Message):
     message = models.CharField(max_length=TEXT_LENGTH, default='Default message')
+    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.username) + ": " + str(self.message)
@@ -97,6 +97,7 @@ class TextMessage(Message):
 
 class DrawingMessage(Message):
     data = models.FileField(upload_to=DRAWING_FILE_LOCATION)
+    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.username) + ": " + str(self.data)
