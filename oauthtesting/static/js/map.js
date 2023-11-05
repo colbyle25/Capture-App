@@ -1,10 +1,10 @@
 var map;
 var markers = [];
-var marker;
+var currentMarker;
 var currentInfoWindow = null;
 
 function initMap() {
-
+    console.log("initializing");
     account_image = document.images;
     img = 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b91ae6af-3261-4f95-990e-4896507279ad/d5jzig1-3bd05d51-8646-443c-9030-600bd5eaf473.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2I5MWFlNmFmLTMyNjEtNGY5NS05OTBlLTQ4OTY1MDcyNzlhZFwvZDVqemlnMS0zYmQwNWQ1MS04NjQ2LTQ0M2MtOTAzMC02MDBiZDVlYWY0NzMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.js96fjW1bMXaPF6fzpgHOc6xbsL7CsSqU1Nit2OEGwA';
     if (account_image[0]) {
@@ -101,45 +101,48 @@ function initMap() {
         });
     });
     google.maps.event.addListener(map, 'click', function(event) {
-        placeMarker(event.latLng);
+        placeNewMarker(event.latLng);
     });
 
     // Loads the markers whenever the map is loaded
     LoadMarkers();
 }
 
-// Overloading method. Method for placing new markers.
-function placeMarker(location) {
-    if (marker)
+function placeNewMarker(location) {
+    if (currentMarker)
     {
-        marker.setPosition(location);
+        currentMarker.setPosition(location);
+        console.log("Marker moved", currentMarker);
     }
     else{
-        marker = new google.maps.Marker({
+        console.log("Marker Created", currentMarker);
+        currentMarker = new google.maps.Marker({
             position: location,
             map: map,
             draggable: true  // Allows users to drag and adjust the marker position if desired
         })
+        currentMarker.userMessage = "";
     }
 
-    google.maps.event.addListener(marker, "click", function (e) {
-        var contentString = generateContentString(marker, location);
+    google.maps.event.addListener(currentMarker, "click", function (e) {
+        var contentString = generateContentString(currentMarker, location);
         var infoWindow = new google.maps.InfoWindow({
             content: contentString
         });
         if (currentInfoWindow) {
         currentInfoWindow.close();
     }
-        infoWindow.open(map, marker);
+        infoWindow.open(map, currentMarker);
         currentInfoWindow = infoWindow;
     });
 
-    markers.push(marker);
+    markers.push(currentMarker);
 }
 
-// Overloading Method. Method for placing database markers.
+// Method for placing database markers.
 function placeMarker(location, message, id) {
-    marker = new google.maps.Marker({
+    console.log("Placing from db", id);
+    var marker = new google.maps.Marker({
         position: location,
         map: map,
         draggable: true  // Allows users to drag and adjust the marker position if desired
@@ -213,9 +216,15 @@ function SaveMessage(id) {
             console.error('Error:', error);
         });
     }
+    currentMarker = null;
 }
 
 function DeleteMarker(id) {
+    if (currentMarker) {
+        currentMarker.setMap(null);
+        currentMarker = null;
+        return;
+    }
     fetch(`/delete_marker/${id}/`, {
         method: 'DELETE',
         headers: {
