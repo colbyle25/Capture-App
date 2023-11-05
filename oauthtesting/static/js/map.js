@@ -3,6 +3,7 @@ var markers = [];
 var currentMarker;
 var currentInfoWindow = null;
 var admView = false;
+var preid = 0;
 
 
 
@@ -117,6 +118,7 @@ function placeNewMarker(location) {
     {
         currentMarker.setPosition(location);
         console.log("Marker moved", currentMarker);
+        return;
     }
     else{
         console.log("Marker Created", currentMarker);
@@ -127,23 +129,25 @@ function placeNewMarker(location) {
             // content: pinUnapproved,
             icon: {url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) },
         })
+        currentMarker.protoid = preid++;
         currentMarker.userMessage = "";
         currentMarker.approved = false;
     }
+    var marker = currentMarker;
 
-    google.maps.event.addListener(currentMarker, "click", function (e) {
-        var contentString = generateContentString(currentMarker, location);
+    google.maps.event.addListener(marker, "click", function (e) {
+        var contentString = generateContentString(marker, location);
         var infoWindow = new google.maps.InfoWindow({
             content: contentString
         });
         if (currentInfoWindow) {
             currentInfoWindow.close();
         }
-        infoWindow.open(map, currentMarker);
+        infoWindow.open(map, marker);
         currentInfoWindow = infoWindow;
     });
 
-    markers.push(currentMarker);
+    markers.push(marker);
 }
 
 // Method for placing database markers.
@@ -253,7 +257,7 @@ function Approve(id) {
         var marker = markers.find(marker => marker.id === id);
         marker.approved = true;
         // marker.content = pinApproved;
-        marker.setIcon();
+        marker.setIcon(null);
         if (currentInfoWindow) {
             currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
         }
@@ -297,8 +301,8 @@ function generateContentString(marker) {
 
     if (marker.userMessage === "") { // If there's no saved message, show textarea
         contentString += 'Write a Message! ' + '<br>';
-        contentString += '<textarea id="userMessage_' + marker.id + '" class="userMessageTextarea"></textarea><br>';
-        contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.id + ');" value="Submit for Approval">';
+        contentString += '<textarea id="userMessage_' + marker.protoid + '" class="userMessageTextarea"></textarea><br>';
+        contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.protoid + ');" value="Submit for Approval">';
     } else {
         marker.likes = marker.likes ? marker.likes : 0;
         marker.liked = marker.liked ? marker.liked : false;
@@ -329,10 +333,10 @@ function generateContentString(marker) {
     return contentString;
 }
 
-function SaveMessage(id) {
-    var marker = markers.find(m => m.id === id);
+function SaveMessage(protoid) {
+    var marker = markers.find(m => m.protoid === protoid);
     if (marker) {
-        var userMessage = document.getElementById('userMessage_' + id).value;
+        var userMessage = document.getElementById('userMessage_' + protoid).value;
         var postData = {
             'latitude': marker.getPosition().lat(),
             'longitude': marker.getPosition().lng(),
@@ -352,6 +356,9 @@ function SaveMessage(id) {
             if(data.status === 'success') {
                 marker.id = data.id;
                 marker.userMessage = userMessage;
+                marker.approved = false;
+                marker.likes = 0;
+                marker.liked = false;
                 if (currentInfoWindow) {
                     currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
                 }
