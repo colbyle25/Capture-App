@@ -10,7 +10,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
 from .forms import AccountForm
-from .models import Account, Message, POI
+from .models import Account, TextMessage, POI
 
 
 
@@ -127,7 +127,7 @@ def save_marker(request):
     latitude = data['latitude']
     longitude = data['longitude']
 
-    marker_message = Message.objects.create(
+    marker_message = TextMessage.objects.create(
         username = username,
         message = message,
         latitude = latitude,
@@ -138,12 +138,12 @@ def save_marker(request):
 
 @require_http_methods(["DELETE"])
 def delete_marker(request, marker_id):
-    marker = get_object_or_404(Message, pk=marker_id)
+    marker = get_object_or_404(TextMessage, pk=marker_id)
     marker.delete()
     return JsonResponse({'status': 'success', 'message': 'Marker deleted'})
 
 @login_required
 def load_markers(request):
-    markers = Message.objects.all()
+    markers = TextMessage.objects.all()
     markers_data = list(markers.values('id', 'latitude', 'longitude', 'message'))
     return JsonResponse(markers_data, safe=False)
