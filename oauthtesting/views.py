@@ -1,4 +1,3 @@
-
 from datetime import datetime
 import json
 
@@ -11,7 +10,6 @@ from django.views.decorators.http import require_http_methods
 
 from .forms import AccountForm
 from .models import Account, TextMessage, POI
-
 
 
 # Create your views here.
@@ -72,7 +70,7 @@ def map(request):
     pois_list = []
     for poi in pois:
         poi_data = {
-            'pid':  poi.pid,
+            'pid': poi.pid,
             'points': poi.points,
             'img': poi.img.url,
             'time': poi.time.strftime(time_format),
@@ -144,6 +142,6 @@ def delete_marker(request, marker_id):
 
 @login_required
 def load_markers(request):
-    markers = TextMessage.objects.all()
+    markers = TextMessage.objects.filter(approved=True)
     markers_data = list(markers.values('id', 'latitude', 'longitude', 'message'))
     return JsonResponse(markers_data, safe=False)

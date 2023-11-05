@@ -176,7 +176,8 @@ function generateContentString(marker) {
         contentString += marker.userMessage + '<br>';
     }
 
-    contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
+    // contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
+    // removed delete button for now
     contentString += '</div>';
 
     return contentString;
