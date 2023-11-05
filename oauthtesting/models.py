@@ -82,17 +82,16 @@ class Message(models.Model):
                                     decimal_places=COORDINATE_DECIMAL_PLACES)
     latitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                    decimal_places=COORDINATE_DECIMAL_PLACES)
-    message = models.CharField(max_length=TEXT_LENGTH, default='Default message')
 
     def __str__(self):
-        return f"{self.username}: {self.message} ({self.longitude}, {self.latitude})"
+        return f"{self.username}:({self.longitude}, {self.latitude})"
 
 
 class TextMessage(Message):
-    text = models.CharField(max_length=TEXT_LENGTH)
+    message = models.CharField(max_length=TEXT_LENGTH, default='Default message')
 
     def __str__(self):
-        return str(self.username) + ": " + str(self.text)
+        return str(self.username) + ": " + str(self.message)
 
 
 class DrawingMessage(Message):
