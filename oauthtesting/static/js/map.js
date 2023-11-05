@@ -321,9 +321,9 @@ function generateContentString(marker) {
                 contentString += '<input type="button" class="saveButton" onclick="Unapprove(' + marker.id + ');" value="Unapprove">';
             }
             contentString += '<br>';
+            contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
+            contentString += '<br>';
         }
-        contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
-        contentString += '<br>';
     }
 
     // contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
