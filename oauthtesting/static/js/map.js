@@ -1,6 +1,6 @@
 var map;
 var markers = [];
-var uniqueID = 0;
+var marker;
 var currentInfoWindow = null;
 
 function initMap() {
@@ -108,12 +108,38 @@ function initMap() {
     LoadMarkers();
 }
 
+// Overloading method. Method for placing new markers.
+function placeMarker(location) {
+    if (marker)
+    {
+        marker.setPosition(location);
+    }
+    else{
+        marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            draggable: true  // Allows users to drag and adjust the marker position if desired
+        })
+    }
 
+    google.maps.event.addListener(marker, "click", function (e) {
+        var contentString = generateContentString(marker, location);
+        var infoWindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+        if (currentInfoWindow) {
+        currentInfoWindow.close();
+    }
+        infoWindow.open(map, marker);
+        currentInfoWindow = infoWindow;
+    });
 
+    markers.push(marker);
+}
+
+// Overloading Method. Method for placing database markers.
 function placeMarker(location, message, id) {
-    // Inform the user if they lack the sufficient points to place a marker. TODO
-    
-    var marker = new google.maps.Marker({
+    marker = new google.maps.Marker({
         position: location,
         map: map,
         draggable: true  // Allows users to drag and adjust the marker position if desired
