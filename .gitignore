@@ -7,7 +7,10 @@ db.sqlite3
 media
 
 # Backup files # 
-*.bak 
+*.bak
+
+# Stop uploading the .idea folder git thanks
+.idea/
 
 # If you are using PyCharm # 
 # User-specific stuff

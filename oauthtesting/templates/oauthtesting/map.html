@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block html %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/map_style.css' %}">
+
+{% load socialaccount %}
+{% providers_media_js %}
+
+<html>
+    <head>
+        <title>Map</title>
+        <div class="invisible position-absolute">
+            {% if account %}
+                {% if account.picture %}
+                    <img src="{{ account.picture.url}}" alt="profile picture">
+                {% endif %}
+            {% endif %}
+        </div>
+    </head>
+    <body data-username="{{ account.username }}">
+        <div id="UVA_MAP" class="map"></div>
+        <script type="text/javascript">
+            const CSRF_TOKEN = '{{ csrf_token }}';
+        </script>
+        <script> var pois = {{pois|safe}} </script>
+        <script src = "{% static 'js/map.js' %}"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHO1XcQLlUn6V7sRyRzKDzrzBGl7h97F0&callback=initMap&libraries=maps,marker&v=beta"></script>
+
+        <footer class = 'footer footer-styling'>
+            <div class = "text-center">
+                <p>
+                    Copyright 2023
+                </p>
+                <p>
+                    This is the ouathtesting for the capture app.
+                </p>
+            </div>
+          </footer>
+      
+    </body>
+</html>
+
+{% endblock %}

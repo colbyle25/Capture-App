@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block html %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/lookup_style.css' %}">
+
+{% load socialaccount %}
+{% providers_media_js %}
+
+<div class="m-3">
+    {% if account %}
+        <table class="account-table">
+            <tbody>
+                <tr class = "account-info-th-text">
+                    <th scope="row">USERNAME</th>
+                </tr>
+                <tr class = "account-info-text">
+                    <td>{{ account.username }}</td>
+                </tr>
+                <tr class = "account-info-th-text">
+                    <th scope="row">BIO</th>
+                </tr>
+                <tr class = "account-info-text">
+                    <td>{{ account.bio }}</td>
+                </tr>
+                <tr class = "account-info-th-text">
+                    <th scope="row">POINTS</th>
+                </tr>
+                <tr class = "account-info-text">
+                    <td>{{ account.points }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if account %}
+            {% if account.picture %}
+                <img src="{{ account.picture.url}}" alt="profile picture">
+            {% endif %}
+        {% endif %}
+    {% else %}
+    <h3>No account found</h3>
+    {% endif %}
+</div>
+
+{% endblock %}
