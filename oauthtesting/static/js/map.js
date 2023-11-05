@@ -2,10 +2,6 @@ var map;
 var markers = [];
 var uniqueID = 0;
 var currentInfoWindow = null;
-// Made MAX_MARKERS 100 for now as I haven't implemented functionality for per user markers. 
-// When loading all the markers it counts them towards your total regardless of if you made them or not
-const MAX_MARKERS = 100;
-
 
 function initMap() {
 
@@ -115,11 +111,8 @@ function initMap() {
 
 
 function placeMarker(location, message, id) {
-    if (markers.length >= MAX_MARKERS){
-        alert("You can only place " + MAX_MARKERS + " markers at a time.");
-        return;
-    }
-
+    // Inform the user if they lack the sufficient points to place a marker. TODO
+    
     var marker = new google.maps.Marker({
         position: location,
         map: map,
