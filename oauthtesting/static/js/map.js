@@ -171,7 +171,7 @@ function generateContentString(marker) {
     if (marker.userMessage === "") { // If there's no saved message, show textarea
         contentString += 'Write a Message! ' + '<br>';
         contentString += '<textarea id="userMessage_' + marker.id + '" class="userMessageTextarea"></textarea><br>';
-        contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.id + ');" value="Save">';
+        contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.id + ');" value="Submit for Approval">';
     } else {
         contentString += marker.userMessage + '<br>';
     }
