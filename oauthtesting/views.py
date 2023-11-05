@@ -5,12 +5,12 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
 from .forms import AccountForm
-from .models import Account, TextMessage, POI
+from .models import Account, TextMessage, POI, Like
 
 
 # Create your views here.
@@ -150,4 +150,32 @@ def delete_marker(request, marker_id):
 def load_markers(request):
     markers = TextMessage.objects.filter(approved=True)
     markers_data = list(markers.values('id', 'latitude', 'longitude', 'message'))
+    for x in markers_data:
+        mk = TextMessage.objects.get(id=x['id'])
+        i = x['id']
+        x['likes'] = Like.objects.filter(poster=mk).count()
+        x['liked'] = Like.objects.filter(poster=mk,liker=Account.objects.filter(username=request.user).first()).count() > 0
     return JsonResponse(markers_data, safe=False)
+
+@login_required
+def like_marker(request, id):
+    marker = get_object_or_404(TextMessage, pk=id)
+    username = Account.objects.filter(username=request.user).first()
+    if Like.objects.filter(liker=username, poster=marker).count():
+        return HttpResponseBadRequest()
+    Like.objects.create(
+        poster=marker,
+        liker=username
+    )
+    return JsonResponse({'status': 'success', 'message': 'Like added'})
+
+@login_required
+def unlike_marker(request, id):
+    marker = get_object_or_404(TextMessage, pk=id)
+    username = Account.objects.filter(username=request.user).first()
+    if not Like.objects.filter(liker=username, poster=marker).count():
+        return HttpResponseBadRequest()
+    like = get_object_or_404(Like, liker=username, poster=marker)
+    like.delete()
+    return JsonResponse({'status': 'success', 'message': 'Like removed'})
+
