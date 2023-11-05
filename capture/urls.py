@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from oauthtesting import views
 from django.conf import settings
 from django.conf.urls.static import static
+
+from oauthtesting import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +30,10 @@ urlpatterns = [
     path('lookup/', views.lookup, name='lookup'),
     path('map/', views.map, name='map'),
     path('profile/', views.profile_view, name='profile'),
-    path('', views.home, name='home')
+    path('', views.home, name='home'),
+    path('save_marker/', views.save_marker, name='save_marker'),
+    path('delete_marker/<int:marker_id>/', views.delete_marker, name='delete_marker'),
+    path('load_markers/', views.load_markers, name='load_markers'),
 ]
 
 # Allows for seeing profile pictures in development server

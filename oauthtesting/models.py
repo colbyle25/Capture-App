@@ -75,23 +75,25 @@ class Captured(models.Model):
 
 
 class Message(models.Model):
+    id = models.AutoField(primary_key=True)
     username = models.ForeignKey(Account, on_delete=models.CASCADE)
-    time = models.DateTimeField()
+    time = models.DateTimeField()#auto_now_add=True)
     longitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                     decimal_places=COORDINATE_DECIMAL_PLACES)
     latitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                    decimal_places=COORDINATE_DECIMAL_PLACES)
+    approved = models.BooleanField(default=False)
 
-    # Primary Key
-    class Meta:
-        constraints = [models.UniqueConstraint(fields=['username', 'time'], name='message_id')]
+
+    def __str__(self):
+        return f"{self.username}:({self.longitude}, {self.latitude})"
 
 
 class TextMessage(Message):
-    text = models.CharField(max_length=TEXT_LENGTH)
+    message = models.CharField(max_length=TEXT_LENGTH, default='Default message')
 
     def __str__(self):
-        return str(self.username) + ": " + str(self.text)
+        return str(self.username) + ": " + str(self.message)
 
 
 class DrawingMessage(Message):

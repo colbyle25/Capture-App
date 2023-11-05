@@ -1,13 +1,16 @@
-from django.contrib import messages
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import logout
-from django.contrib.messages import *
-from .forms import AccountForm
-from .models import Account
-from .models import POI
-from django.conf import settings
+from datetime import datetime
 import json
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.http import require_http_methods
+
+from .forms import AccountForm
+from .models import Account, TextMessage, POI
 
 
 # Create your views here.
@@ -70,7 +73,7 @@ def map(request):
     pois_list = []
     for poi in pois:
         poi_data = {
-            'pid':  poi.pid,
+            'pid': poi.pid,
             'points': poi.points,
             'img': poi.img.url,
             'time': poi.time.strftime(time_format),
@@ -117,3 +120,34 @@ def leaderboard(request):
     context = {'accounts': accounts[:5], 'account': account, 'placement': placement}
     return render(request, 'oauthtesting/leaderboard.html', context)
 
+
+@require_http_methods(["POST"])
+def save_marker(request):
+    data = json.loads(request.body)
+    username = Account.objects.filter(username=request.user).first()
+    message = data['message']
+    latitude = data['latitude']
+    longitude = data['longitude']
+
+    marker_message = TextMessage.objects.create(
+        username=username,
+        message=message,
+        latitude=latitude,
+        longitude=longitude,
+        time=datetime.now()
+    )
+    return JsonResponse({'id': marker_message.id, 'status': 'success'})
+
+
+@require_http_methods(["DELETE"])
+def delete_marker(request, marker_id):
+    marker = get_object_or_404(TextMessage, pk=marker_id)
+    marker.delete()
+    return JsonResponse({'status': 'success', 'message': 'Marker deleted'})
+
+
+@login_required
+def load_markers(request):
+    markers = TextMessage.objects.filter(approved=True)
+    markers_data = list(markers.values('id', 'latitude', 'longitude', 'message'))
+    return JsonResponse(markers_data, safe=False)

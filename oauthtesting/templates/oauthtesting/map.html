@@ -18,9 +18,11 @@
             {% endif %}
         </div>
     </head>
-    <body>
+    <body data-username="{{ account.username }}">
         <div id="UVA_MAP" class="map"></div>
-
+        <script type="text/javascript">
+            const CSRF_TOKEN = '{{ csrf_token }}';
+        </script>
         <script> var pois = {{pois|safe}} </script>
         <script src = "{% static 'js/map.js' %}"></script>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHO1XcQLlUn6V7sRyRzKDzrzBGl7h97F0&callback=initMap&libraries=maps,marker&v=beta"></script>
