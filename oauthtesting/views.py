@@ -140,7 +140,7 @@ def save_marker(request):
 @require_http_methods(["DELETE"])
 def delete_marker(request, marker_id):
     marker = get_object_or_404(TextMessage, pk=marker_id)
-    me = Account.objects.filter(username=request.user)
+    me = Account.objects.filter(username=request.user).first()
     if (marker.username != me
         and not request.user.is_superuser):
         return HttpResponse(status=403)
