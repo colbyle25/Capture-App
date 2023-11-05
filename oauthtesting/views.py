@@ -138,18 +138,40 @@ def save_marker(request):
     )
     return JsonResponse({'id': marker_message.id, 'status': 'success'})
 
-
+@login_required
 @require_http_methods(["DELETE"])
 def delete_marker(request, marker_id):
     marker = get_object_or_404(TextMessage, pk=marker_id)
+    me = Account.objects.filter(username=request.user).first()
+    if (marker.username != me
+        and not request.user.is_superuser):
+        return HttpResponse(status=403)
     marker.delete()
     return JsonResponse({'status': 'success', 'message': 'Marker deleted'})
 
 
 @login_required
+def approve_marker(request, id):
+    if not request.user.is_superuser:
+        return HttpResponse(status=403)
+    marker = get_object_or_404(TextMessage, pk=id)
+    marker.approved = True
+    marker.save()
+    return JsonResponse({'status': 'success', 'message': 'Marker approved'})
+
+@login_required
+def unapprove_marker(request, id):
+    if not request.user.is_superuser:
+        return HttpResponse(status=403)
+    marker = get_object_or_404(TextMessage, pk=id)
+    marker.approved = False
+    marker.save()
+    return JsonResponse({'status': 'success', 'message': 'Marker unapproved'})
+
+@login_required
 def load_markers(request):
-    markers = TextMessage.objects.filter(approved=True)
-    markers_data = list(markers.values('id', 'latitude', 'longitude', 'message'))
+    markers = TextMessage.objects.filter(approved=True) if not request.user.is_superuser else TextMessage.objects.filter()
+    markers_data = list(markers.values('id', 'latitude', 'longitude', 'message', 'approved'))
     for x in markers_data:
         mk = TextMessage.objects.get(id=x['id'])
         i = x['id']
@@ -179,3 +201,6 @@ def unlike_marker(request, id):
     like.delete()
     return JsonResponse({'status': 'success', 'message': 'Like removed'})
 
+@login_required
+def amiadmin(request):
+    return JsonResponse({'admin': request.user.is_superuser})
