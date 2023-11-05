@@ -140,7 +140,7 @@ function placeNewMarker(location) {
 }
 
 // Method for placing database markers.
-function placeMarker(location, message, id) {
+function placeMarker(location, message, id, likes, liked) {
     console.log("Placing from db", id);
     var marker = new google.maps.Marker({
         position: location,
@@ -150,6 +150,8 @@ function placeMarker(location, message, id) {
 
     marker.id = id;
     marker.userMessage = message ? message : "";
+    marker.likes = likes;
+    marker.liked = liked;
 
     google.maps.event.addListener(marker, "click", function (e) {
         var contentString = generateContentString(marker, location);
@@ -165,6 +167,63 @@ function placeMarker(location, message, id) {
 
     markers.push(marker);
 }
+
+function Like(id) {
+    fetch(`/like/${id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFTOKEN': CSRF_TOKEN
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Message liked:', data);
+        var marker = markers.find(marker => marker.id === id);
+        marker.likes += 1;
+        marker.liked = true;
+        if (currentInfoWindow) {
+            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
+        }
+    })
+    .catch(error => {
+        console.error('Error during like:', error);
+    });
+}
+
+function Unlike(id) {
+    fetch(`/unlike/${id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFTOKEN': CSRF_TOKEN
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Message unliked:', data);
+        var marker = markers.find(marker => marker.id === id);
+        marker.likes -= 1;
+        marker.liked = false;
+        if (currentInfoWindow) {
+            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
+        }
+    })
+    .catch(error => {
+        console.error('Error during unlike:', error);
+    });
+}
+
 function generateContentString(marker) {
     var contentString = '<div class="infoWindowContent">';
 
@@ -173,7 +232,16 @@ function generateContentString(marker) {
         contentString += '<textarea id="userMessage_' + marker.id + '" class="userMessageTextarea"></textarea><br>';
         contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.id + ');" value="Submit for Approval">';
     } else {
+        marker.likes = marker.likes ? marker.likes : 0;
+        marker.liked = marker.liked ? marker.liked : false;
         contentString += marker.userMessage + '<br>';
+        contentString += marker.likes + " likes -- ";
+        if (!marker.liked) {
+            contentString += '<input type="button" class="saveButton" onclick="Like(' + marker.id + ');" value="Like">';
+        } else {
+            contentString += '<input type="button" class="saveButton" onclick="Unlike(' + marker.id + ');" value="Unlike">';
+        }
+        contentString += '<br>';
     }
 
     // contentString += '<input type="button" class="deleteButton" onclick="DeleteMarker(' + marker.id + ');" value="Delete">';
@@ -263,7 +331,7 @@ function LoadMarkers() {
     .then(data => {
         data.forEach(Message => {
             const position = new google.maps.LatLng(Message.latitude, Message.longitude);
-            placeMarker(position, Message.message, Message.id);
+            placeMarker(position, Message.message, Message.id, Message.likes, Message.liked);
         });
     })
     .catch(error => {
