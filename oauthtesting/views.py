@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
+from django.db import transaction
 
 from .forms import AccountForm
 from .models import Account, TextMessage, POI, Item, Purchase
@@ -129,16 +130,18 @@ def pointshop(request):
         'purchased_item_ids': purchased_item_ids})
 
 @require_http_methods(["POST"])
+@transaction.atomic
 def purchase_item(request, item_id):
     item = Item.objects.get(id = item_id)
     user = Account.objects.filter(username=request.user).first()
-    user_points = user.points
-    if user_points >= item.cost:
-        user_points -= item.cost
+    if user.points >= item.cost:
+        user.points -= item.cost
         user.save()
 
         Purchase.objects.create(user = user, item=item)
-        return JsonResponse({'success': True, 'message': f'Successfully purchased {item.name}'})
+        return JsonResponse({'success': True,
+                             'message': f'Successfully purchased {item.name}',
+                             'new_points_total': user.points})
     else:
         return JsonResponse({'success': False, 'error': 'Not enough points'})
     
