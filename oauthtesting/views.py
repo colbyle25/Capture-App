@@ -6,11 +6,11 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 
 from .forms import AccountForm
-from .models import Account, TextMessage, POI
+from .models import Account, TextMessage, POI, Item, Purchase
 
 
 # Create your views here.
@@ -118,6 +118,30 @@ def leaderboard(request):
     context = {'accounts': accounts[:5], 'account': account, 'placement': placement}
     return render(request, 'oauthtesting/leaderboard.html', context)
 
+def pointshop(request):
+    items = Item.objects.all()
+    user = Account.objects.filter(username=request.user).first()
+    purchased_item_ids = Purchase.objects.filter(user=user).values_list('item_id', flat=True)
+
+    return render(request, 'oauthtesting/pointshop.html', {
+        'account': Account.objects.filter(username=request.user).first(),
+        'items': items,
+        'purchased_item_ids': purchased_item_ids})
+
+@require_http_methods(["POST"])
+def purchase_item(request, item_id):
+    item = Item.objects.get(id = item_id)
+    user = Account.objects.filter(username=request.user).first()
+    user_points = user.points
+    if user_points >= item.cost:
+        user_points -= item.cost
+        user.save()
+
+        Purchase.objects.create(user = user, item=item)
+        return JsonResponse({'success': True, 'message': f'Successfully purchased {item.name}'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Not enough points'})
+    
 
 @require_http_methods(["POST"])
 def save_marker(request):

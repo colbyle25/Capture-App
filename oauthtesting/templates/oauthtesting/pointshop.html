@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block html %}
+
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/pointshop_style.css' %}">
+
+<title>Point Shop</title>
+
+<div class = "account-info">
+    <p> User: {{account.username}} </p>
+    <p> Current Points: {{account.points}} </p>
+</div>
+
+<script type="text/javascript">
+    const CSRF_TOKEN = '{{ csrf_token }}';
+</script>
+
+<div class = "items-container">
+    {% for item in items %}
+        <div class = "item">
+            <h2> {{ item.name }} </h2>
+            <p> {{ item.description }} </p>
+            <p> Cost: {{item.cost}} points</p>
+            {% if item.id in purchased_item_ids %}
+                <button class="purchase-button" disabled>Item Owned</button>
+            {% else %}
+                {% if account.points >= item.cost %}
+                    <button class="purchase-button" data-item-id="{{ item.id }}">Purchase</button>
+                {% else %}
+                    <p>Not enough points.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<script src = "{% static 'js/pointshop.js' %}"></script>
+
+{% endblock %}

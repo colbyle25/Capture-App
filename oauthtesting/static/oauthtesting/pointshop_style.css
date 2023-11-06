@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css?family=Gabarito|Lato');
+
+:root{
+    --off-white: #f0efeb;
+    --gray: #e5e3e1;
+}
+
+body{
+    background: var(--off-white);
+}
+
+.navbar-text{
+    margin-left: 2vh;
+    color: white;
+    text-align: center;
+    font-family: "Gabarito";
+}
+
+.footer-styling{
+    font-family: 'Lato';
+    font-size: 1em;
+
+    margin-top: 5vh;
+    background-color: var(--gray);
+    padding-top: 2%;
+    padding-bottom: 9vh;
+    border: 0px;
+    border-top: .5px;
+    border-color: black;
+    border-style: solid;
+}
+
+.items-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+
+.item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.purchase-button {
+    margin-top: 10px;
+}
+
+/* Add responsive behavior */
+@media (max-width: 600px) {
+    .items-container {
+        grid-template-columns: 1fr;
+    }
+}

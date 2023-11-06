@@ -36,7 +36,6 @@ class Account(models.Model):
     def __str__(self):
         return self.username
 
-
 class Friends(models.Model):
     user1 = models.ForeignKey(Account, related_name="user1", on_delete=models.CASCADE)
     user2 = models.ForeignKey(Account, related_name="user2", on_delete=models.CASCADE)
@@ -114,3 +113,31 @@ class Like(models.Model):
 
     def __str__(self):
         return str(self.liker) + " liked " + str(self.poster) + "'s post from " + str(self.time)
+
+class Item(models.Model):
+    CATEGORY_CHOICES = (
+        ('background', 'Background Color'),
+        ('border', 'Profile Border')
+    )
+
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    cost = models.IntegerField()
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+
+    def __str__(self):
+        return str(self.name)
+
+class Purchase(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    date_purchased = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{} purchased {} on {}".format(str(self.user), str(self.item), str(self.date_purchased))
+    
+class Account_Profile(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    background = models.ForeignKey(Item, related_name='selected_background', on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'category': 'background'})
+    border = models.ForeignKey(Item, related_name='selected_border', on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'category': 'border'})
+

@@ -25,6 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
+    path('pointshop/', views.pointshop, name='pointshop'),
+    path('purchase/<int:item_id>/', views.purchase_item, name='purchase_item'),
     path('login/', views.login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('lookup/', views.lookup, name='lookup'),
