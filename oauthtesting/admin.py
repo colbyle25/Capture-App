@@ -1,12 +1,11 @@
 from django.contrib import admin
-from oauthtesting.models import Account, TextMessage, POI, Item, Purchase, Account_Profile
+from oauthtesting.models import Account, TextMessage, POI, Item, Purchase
 
 # Register your models here.
 admin.site.register(Account)
 admin.site.register(POI)
 admin.site.register(Item)
 admin.site.register(Purchase)
-admin.site.register(Account_Profile)
 
 @admin.action(description='Approve selected messages')
 def approve_messages(queryset):
