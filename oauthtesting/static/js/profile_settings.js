@@ -6,11 +6,13 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
             var category = this.getAttribute('data-category');
             document.querySelectorAll(`.select-button[data-category="${category}"]`).forEach(btn => {
+                btn.parentElement.classList.remove('selected');
                 btn.classList.remove('selected');
                 btn.disabled = false;
             });
 
             this.classList.add('selected');
+            this.parentElement.classList.add('selected');
             this.disabled = true;
         });
     });

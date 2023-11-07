@@ -30,7 +30,9 @@ def home(request):
         else:
             account = Account(username=request.user, bio="", points=0, picture="")
             account.save()
-        context = {'user': request.user, 'account': account}
+        account_profile = Account_Profile.objects.filter(user=account).first()
+        border_color = account_profile.border.css if account_profile.border else None
+        context = {'user': request.user, 'account': account, 'border': border_color}  
         return render(request, 'oauthtesting/index.html', context)
     return HttpResponseRedirect("/login/")
 
@@ -82,7 +84,6 @@ def profile_settings(request):
     if not created:
         for category_name, _ in Item.CATEGORY_CHOICES:
             selected_items[category_name].append(getattr(user_profile, category_name, None))
-    print(selected_items)
 
     return render(request, 'oauthtesting/profile_settings.html', {'user': user, 'categorized_items': dict(categorized_items), 'selected_items': dict(selected_items)})
 

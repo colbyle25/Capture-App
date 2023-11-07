@@ -84,12 +84,12 @@ body{
 }
 
 .account-table-div{
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
+    background: darkgrey;
+    align-items: center;
     margin: auto;
-    width: 50vh;
-    padding-top: 5vh;
+    width: 50%;
+    text-align: center;
+    padding-bottom: 100%;
 }
 
 .account-table th, .account-table td {

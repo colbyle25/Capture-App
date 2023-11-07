@@ -4,6 +4,7 @@
     margin: auto;
     display: flex;
     flex-direction: column;
+    background-color: gainsboro;
 }
 
 .select-button {
@@ -28,11 +29,9 @@
     border-radius: 10px;
     display: block;
     width: 50%;
-  }
-
-  .apply-button:hover {
+}
+.apply-button:hover {
     background-position: right center; /* change the direction of the change here */
     color: #fff;
     text-decoration: none;
-  }
- 
+}

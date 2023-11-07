@@ -7,9 +7,8 @@
 {% load socialaccount %}
 {% providers_media_js %}
 
-<div>
-  <div class="m-3">
-  <h3 class="">{{ user.username }}</h3>
+<div class = "profile-background">
+  <h3 class="username">{{ user.username }}</h3>
 
   <a href="{% url 'profile_settings' %}" class="settings-button">Profile Customization</a>
 
@@ -22,7 +21,6 @@
   {% if account %}  <h3>Account created : {{account.username}}</h3>
   <img src="{{ account.picture.url}}" alt="connect" style="max-height:300px">
   {% endif %}
-  </div>
 <div>
 
 {% endblock %}

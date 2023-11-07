@@ -10,8 +10,8 @@
 
 <div class="pointshop">
     <div class = "account-info">
-        <p> User: {{account.username}} </p>
-        <p>Current Points: <span id="points-display">{{ account.points }}</span></p>
+        <div class = "username"> User: {{account.username}} </div>
+        <div id="points-display" class = "points-display"> Current Points: {{ account.points }}</div>
     </div>
 
     <script type="text/javascript">
@@ -23,10 +23,10 @@
     <div class="items-container">
         {% for item in items %}
             <div class="item">
-                <h2>{{ item.name }}</h2>
                 <div class="preview {{ item.css }}"></div>
-                <p>{{ item.description }}</p>
-                <p> Cost: {{item.cost}} points</p>
+                <div class="item-name">{{ item.name }}</div>
+                <div class="item-description">{{ item.description }}</div>
+                <div class="item-cost"> Cost: {{item.cost}} points</div>
                 {% if item.id in purchased_item_ids %}
                         <button class="purchase-button" disabled>Item Owned</button>
                 {% else %}
