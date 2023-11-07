@@ -10,6 +10,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.db import transaction
 
+from django.apps import apps
+
 from collections import defaultdict
 
 from .forms import AccountForm
@@ -71,23 +73,40 @@ def profile_settings(request):
     user = Account.objects.filter(username=request.user).first()
     purchases = Purchase.objects.filter(user=user).select_related('item')
     categorized_items = defaultdict(list)
+
     for purchase in purchases:
         categorized_items[purchase.item.category].append(purchase.item)
 
     user_profile, created = Account_Profile.objects.get_or_create(user=user)
     selected_items = defaultdict(list)
-    if created:
+    if not created:
         for category_name, _ in Item.CATEGORY_CHOICES:
             selected_items[category_name].append(getattr(user_profile, category_name, None))
     print(selected_items)
 
     return render(request, 'oauthtesting/profile_settings.html', {'user': user, 'categorized_items': dict(categorized_items), 'selected_items': dict(selected_items)})
 
+@login_required
 @require_http_methods(["POST"])
+@transaction.atomic
 def apply_profile_settings(request):
+    data = json.loads(request.body)
     user = Account.objects.filter(username=request.user).first()
+    user_profile = Account_Profile.objects.filter(user=user).first()
 
-    return redirect('oauthtesting/profile.html')
+    if not user_profile:
+        return JsonResponse({'success': False, 'error': 'User profile does not exist.'}, status=404)
+
+    for category, item_id in data.items():
+        if item_id == 'None':
+            setattr(user_profile, category, None)
+        else:
+            item = get_object_or_404(Item, id=item_id)
+            setattr(user_profile, category, item)
+    
+    user_profile.save()
+    messages.success(request, 'Successfully updated profile')
+    return JsonResponse({'success': True})
 
 
 def map(request):

@@ -5,31 +5,34 @@
 <link rel="stylesheet" href="{% static 'oauthtesting/profile_settings_style.css' %}">
 <link rel="stylesheet" href="{% static 'oauthtesting/item_styles.css' %}">
 
-
+{% load oauthtesting_extras %}
 
 <h2> Edit Profile </h2>
 <div class="profile-settings">
     <script type="text/javascript">
         const CSRF_TOKEN = '{{ csrf_token }}';
     </script>  
-    <button class = "apply-button" id="apply-button" onclick="applyStyles()">Apply</button>
+    <button class = "apply-button" id="apply-button">Apply</button>
     {% for category, items in categorized_items.items %}
         <h3>{{ category|title }}</h3>
         <div class="items-container">
-            <div class="item {% if not selected_items.category %}selected{% endif %}">
+            {% get selected_items category as item_selected %}
+            <div class="item {% if item_selected.0 == None %}selected{% endif %}">
                 <h2>{{ None }}</h2>
-                <button class="select-button {% if not selected_items.category %}selected{% endif %}"
-                        {% if not selected_items.category %}disabled{% endif %}
-                        onclick="selectItem('{{ item.category }}', 'None', this)">Select</button>
+                <button class="select-button {% if item_selected.0 == None %}selected{% endif %}"
+                        {% if item_selected.0 == None %}disabled{% endif %}
+                        data-category="{{ category }}"
+                        data-item-id="None">Select</button>
             </div>
             {% for item in items %}
-                <div class="item {% if selected_items.category == item.id %}selected{% endif %}">
+                <div class="item {% if item_selected and item_selected.0.id == item.id %}selected{% endif %}">
                     <h2>{{ item.name }}</h2>
                     <p>{{ item.description }}</p>
                     <div class="preview {{ item.css }}"></div>
-                    <button class="select-button {% if selected_items.category == item.id %}selected{% endif %}"
-                            {% if selected_items.category == item.id %}disabled{% endif %}
-                            onclick="selectItem('{{ item.category }}', '{{ item.id }}', this)">Select</button>
+                    <button class="select-button {% if item_selected and item_selected.0.id == item.id %}selected{% endif %}"
+                            {% if item_selected and item_selected.0.id == item.id %}disabled{% endif %}
+                            data-category="{{ category }}"
+                            data-item-id ="{{item.id}}">Select</button>
                 </div>
             {% endfor %}
         </div>
