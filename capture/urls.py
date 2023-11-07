@@ -32,6 +32,7 @@ urlpatterns = [
     path('lookup/', views.lookup, name='lookup'),
     path('map/', views.map, name='map'),
     path('profile/', views.profile_view, name='profile'),
+    path('profile/settings/', views.profile_settings, name='profile_settings'),
     path('', views.home, name='home'),
     path('save_marker/', views.save_marker, name='save_marker'),
     path('delete_marker/<int:marker_id>/', views.delete_marker, name='delete_marker'),

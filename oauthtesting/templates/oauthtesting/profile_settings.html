@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block html %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/profile_settings_style.css' %}">
+<link rel="stylesheet" href="{% static 'oauthtesting/item_styles.css' %}">
+
+
+
+
+<h2> Edit Profile </h2>
+<div class="profile-settings">
+    <div class ="items-container">
+        {% for item in items %}
+            <div class="item">
+                <h2> {{ item.name }} </h2>
+                <p> {{ item.description }} </p>
+                <div class = "preview {{ item.css }}"></div>
+                <button class = "select-button" onclick="selectItem('{{item.id}}')">Select</button>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src = "{% static 'js/profile_settings.js' %}"></script>
+
+{% endblock %}
