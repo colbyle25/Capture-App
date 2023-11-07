@@ -30,7 +30,7 @@ def home(request):
         else:
             account = Account(username=request.user, bio="", points=0, picture="")
             account.save()
-        account_profile = Account_Profile.objects.filter(user=account).first()
+        account_profile, created = Account_Profile.objects.get_or_create(user=account)
         border_color = account_profile.border.css if account_profile.border else None
         context = {'user': request.user, 'account': account, 'border': border_color}  
         return render(request, 'oauthtesting/index.html', context)
