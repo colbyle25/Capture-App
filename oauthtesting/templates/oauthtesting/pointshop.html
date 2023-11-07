@@ -4,37 +4,43 @@
 
 {% load static %}
 <link rel="stylesheet" href="{% static 'oauthtesting/pointshop_style.css' %}">
+<link rel="stylesheet" href="{% static 'oauthtesting/item_styles.css' %}">
 
 <title>Point Shop</title>
 
-<div class = "account-info">
-    <p> User: {{account.username}} </p>
-    <p>Current Points: <span id="points-display">{{ account.points }}</span></p>
-</div>
+<div class="pointshop">
+    <div class = "account-info">
+        <p> User: {{account.username}} </p>
+        <p>Current Points: <span id="points-display">{{ account.points }}</span></p>
+    </div>
 
-<script type="text/javascript">
-    const CSRF_TOKEN = '{{ csrf_token }}';
-</script>
+    <script type="text/javascript">
+        const CSRF_TOKEN = '{{ csrf_token }}';
+    </script>  
 
-<div class = "items-container">
-    {% for item in items %}
-        <div class = "item">
-            <h2> {{ item.name }} </h2>
-            <p> {{ item.description }} </p>
-            <p> Cost: {{item.cost}} points</p>
-            {% if item.id in purchased_item_ids %}
-                <button class="purchase-button" disabled>Item Owned</button>
-            {% else %}
-                {% if account.points >= item.cost %}
-                    <button class="purchase-button" data-item-id="{{ item.id }}">Purchase</button>
+    {% for category, items in categorized_items.items %}
+    <h3>{{ category|title }}</h3>
+    <div class="items-container">
+        {% for item in items %}
+            <div class="item">
+                <h2>{{ item.name }}</h2>
+                <div class="preview {{ item.css }}"></div>
+                <p>{{ item.description }}</p>
+                <p> Cost: {{item.cost}} points</p>
+                {% if item.id in purchased_item_ids %}
+                        <button class="purchase-button" disabled>Item Owned</button>
                 {% else %}
-                    <p>Not enough points.</p>
+                    {% if account.points >= item.cost %}
+                        <button class="purchase-button" data-item-id="{{ item.id }}">Purchase</button>
+                    {% else %}
+                        <p>Not enough points.</p>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        </div>
+            </div>
+        {% endfor %}
+    </div>
     {% endfor %}
 </div>
-
 <script src = "{% static 'js/pointshop.js' %}"></script>
 
 {% endblock %}

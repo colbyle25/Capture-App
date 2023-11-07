@@ -7,19 +7,33 @@
 
 
 
-
 <h2> Edit Profile </h2>
 <div class="profile-settings">
-    <div class ="items-container">
-        {% for item in items %}
-            <div class="item">
-                <h2> {{ item.name }} </h2>
-                <p> {{ item.description }} </p>
-                <div class = "preview {{ item.css }}"></div>
-                <button class = "select-button" onclick="selectItem('{{item.id}}')">Select</button>
+    <script type="text/javascript">
+        const CSRF_TOKEN = '{{ csrf_token }}';
+    </script>  
+    <button class = "apply-button" id="apply-button" onclick="applyStyles()">Apply</button>
+    {% for category, items in categorized_items.items %}
+        <h3>{{ category|title }}</h3>
+        <div class="items-container">
+            <div class="item {% if not selected_items.category %}selected{% endif %}">
+                <h2>{{ None }}</h2>
+                <button class="select-button {% if not selected_items.category %}selected{% endif %}"
+                        {% if not selected_items.category %}disabled{% endif %}
+                        onclick="selectItem('{{ item.category }}', 'None', this)">Select</button>
             </div>
-        {% endfor %}
-    </div>
+            {% for item in items %}
+                <div class="item {% if selected_items.category == item.id %}selected{% endif %}">
+                    <h2>{{ item.name }}</h2>
+                    <p>{{ item.description }}</p>
+                    <div class="preview {{ item.css }}"></div>
+                    <button class="select-button {% if selected_items.category == item.id %}selected{% endif %}"
+                            {% if selected_items.category == item.id %}disabled{% endif %}
+                            onclick="selectItem('{{ item.category }}', '{{ item.id }}', this)">Select</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 </div>
 
 <script src = "{% static 'js/profile_settings.js' %}"></script>

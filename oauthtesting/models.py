@@ -138,13 +138,10 @@ class Purchase(models.Model):
         return "{} purchased {} on {}".format(str(self.user), str(self.item), str(self.date_purchased))
 
 # https://stackoverflow.com/questions/2201598/how-to-define-two-fields-unique-as-couple
-class AccountItem(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True, blank=True)
-    item_category = models.CharField(max_length=50)
-
-    class Meta:
-        unique_together = ('user', 'item_category')
+class Account_Profile(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    background = models.ForeignKey(Item, related_name='background_profiles', on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'category': 'background'})
+    border = models.ForeignKey(Item, related_name='border_profiles', on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'category': 'border'})
 
     def __str__(self):
-        return "{}'s {}: {}".format(str(self.user), str(self.item_category), str(self.item.name if self.item else 'None'))
+        return "{}'s profile".format(str(self.user))

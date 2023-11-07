@@ -22,10 +22,22 @@
     align-items: center;
 }
 
+.item.selected{
+    border: 5px solid red;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    align-items: center;
+}
+
 .bg-blue {
-    background-color: #007bff;
+    background-color: blue;
 }
 
 .bg-green {
-    background-color: #28a745;
+    background-color: green;
+}
+
+.border-red {
+    background-color: red;
 }

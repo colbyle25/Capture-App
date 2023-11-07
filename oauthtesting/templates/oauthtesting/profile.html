@@ -9,6 +9,9 @@
 
 <div class="m-3">
 <h3 class="">{{ user.username }}</h3>
+
+<a href="{% url 'profile_settings' %}" class="settings-button">Profile Customization</a>
+
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
     {{ form.as_p }}

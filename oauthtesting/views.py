@@ -10,8 +10,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.db import transaction
 
+from collections import defaultdict
+
 from .forms import AccountForm
-from .models import Account, TextMessage, POI, Item, Purchase
+from .models import Account, TextMessage, POI, Item, Purchase, Account_Profile
 
 
 # Create your views here.
@@ -61,6 +63,31 @@ def profile_view(request):
     else:
         form = AccountForm()
         return render(request, 'oauthtesting/profile.html', {'form': form})
+    
+def profile_settings(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/login/")
+
+    user = Account.objects.filter(username=request.user).first()
+    purchases = Purchase.objects.filter(user=user).select_related('item')
+    categorized_items = defaultdict(list)
+    for purchase in purchases:
+        categorized_items[purchase.item.category].append(purchase.item)
+
+    user_profile, created = Account_Profile.objects.get_or_create(user=user)
+    selected_items = defaultdict(list)
+    if created:
+        for category_name, _ in Item.CATEGORY_CHOICES:
+            selected_items[category_name].append(getattr(user_profile, category_name, None))
+    print(selected_items)
+
+    return render(request, 'oauthtesting/profile_settings.html', {'user': user, 'categorized_items': dict(categorized_items), 'selected_items': dict(selected_items)})
+
+@require_http_methods(["POST"])
+def apply_profile_settings(request):
+    user = Account.objects.filter(username=request.user).first()
+
+    return redirect('oauthtesting/profile.html')
 
 
 def map(request):
@@ -124,9 +151,13 @@ def pointshop(request):
     user = Account.objects.filter(username=request.user).first()
     purchased_item_ids = Purchase.objects.filter(user=user).values_list('item_id', flat=True)
 
+    categorized_items = defaultdict(list)
+    for item in items:
+        categorized_items[item.category].append(item)
+
     return render(request, 'oauthtesting/pointshop.html', {
         'account': Account.objects.filter(username=request.user).first(),
-        'items': items,
+        'categorized_items': dict(categorized_items),
         'purchased_item_ids': purchased_item_ids})
 
 @require_http_methods(["POST"])
@@ -140,7 +171,6 @@ def purchase_item(request, item_id):
 
         Purchase.objects.create(user = user, item=item)
         return JsonResponse({'success': True,
-                             'message': f'Successfully purchased {item.name}',
                              'new_points_total': user.points})
     else:
         return JsonResponse({'success': False, 'error': 'Not enough points'})
