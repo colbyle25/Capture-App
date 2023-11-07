@@ -30,26 +30,10 @@ body{
     border-style: solid;
 }
 
-.items-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-
-.item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
 .purchase-button {
     margin-top: 10px;
 }
 
-/* Add responsive behavior */
 @media (max-width: 600px) {
     .items-container {
         grid-template-columns: 1fr;

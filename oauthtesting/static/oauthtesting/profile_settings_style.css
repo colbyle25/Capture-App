@@ -1,0 +1,9 @@
+.profile-settings{
+    padding-top: 5vh;
+    text-align: center;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
