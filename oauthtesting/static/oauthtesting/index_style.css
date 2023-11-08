@@ -43,7 +43,8 @@ body{
     flex-direction: column;
     margin: auto;
     width: 50vh;
-    padding-top: 5vh;
+
+    background: var(--off-white);
 }
 
 .account-table th, .account-table td {
@@ -59,6 +60,7 @@ body{
     color: rgb(204, 27, 27);
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 
 .account-table-title{
@@ -66,6 +68,7 @@ body{
     font-size: 1.5em;
     text-align: center;
     font-style: bolder;
+    padding-top: 10px;
     padding-bottom: 2vh;
 }
 

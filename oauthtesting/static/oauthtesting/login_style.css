@@ -9,27 +9,6 @@ body{
     background: var(--off-white);
 }
 
-.navbar-text{
-    margin-left: 2vh;
-    color: white;
-    text-align: center;
-    font-family: "Gabarito";
-}
-
-.footer-styling{
-    font-family: 'Lato';
-    font-size: 1em;
-
-    margin-top: 5vh;
-    background-color: var(--gray);
-    padding-top: 2%;
-    padding-bottom: 9vh;
-    border: 0px;
-    border-top: .5px;
-    border-color: black;
-    border-style: solid;
-}
-
 .login-div{
     padding-top: 5vh;
     text-align: center;

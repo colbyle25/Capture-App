@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block html %}
+
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/pointshop_style.css' %}">
+<link rel="stylesheet" href="{% static 'oauthtesting/item_styles.css' %}">
+
+<title>Point Shop</title>
+
+<div class="pointshop">
+
+    <div>
+        <p> Spend your points on cosmetics! </p>
+    </div>
+
+    <div class = "account-info">
+        <div class = "username"> User: {{account.username}} </div>
+        <div id="points-display" class = "points-display"> Current Points: {{ account.points }}</div>
+    </div>
+
+    <script type="text/javascript">
+        const CSRF_TOKEN = '{{ csrf_token }}';
+    </script>  
+
+    {% for category, items in categorized_items.items %}
+    <h3>{{ category|title }}</h3>
+    <div class="items-container">
+        {% for item in items %}
+            <div class="item">
+                <div class="preview {{ item.css }}"></div>
+                <div class="item-name">{{ item.name }}</div>
+                <div class="item-description">{{ item.description }}</div>
+                <div class="item-cost"> Cost: {{item.cost}} points</div>
+                {% if item.id in purchased_item_ids %}
+                        <button class="purchase-button" disabled>Item Owned</button>
+                {% else %}
+                    {% if account.points >= item.cost %}
+                        <button class="purchase-button" data-item-id="{{ item.id }}">Purchase</button>
+                    {% else %}
+                        <p>Not enough points.</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+<script src = "{% static 'js/pointshop.js' %}"></script>
+
+{% endblock %}

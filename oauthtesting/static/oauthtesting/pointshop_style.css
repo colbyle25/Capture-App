@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css?family=Gabarito|Lato');
+
+.pointshop{
+    padding-top: 5vh;
+    text-align: center;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: gainsboro;
+}
+
+.account-info{
+    display: flex;
+    justify-content: space-between;
+}
+
+.username, .points-display {
+    width: 20%;
+    font-family: "Gabarito";
+    font-size: 25px;
+}
+
+.username {
+    margin-right: auto;
+}
+
+.points-display {
+    margin-left: auto;
+}
+
+.item-cost {
+    text-wrap: wrap;
+}
+
+.purchase-button {
+    width: 75%;
+}
