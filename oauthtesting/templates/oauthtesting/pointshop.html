@@ -10,13 +10,33 @@
 
 <div class="pointshop">
 
-    <div>
-        <p> Spend your points on cosmetics! </p>
+    <h1 class = "season"> Season 1: The Beginning </h1>
+    <h3 class = "mappys-market">Mappy's Market:</h3>
+    <div class = "info-parent">
+        <img src = "/media/images/mappy.png" class = 'mappy-logo'>'</img>
+        <div class = "info-container">
+            <p class = "info-message"> "O Traveler, trade me points and I'll make your Profile Picture fresh. </p>
+            <p class = "info-message"> Maximum satisfaction or your money back guaranteed! Not really..." </p>
+        </div>
     </div>
 
-    <div class = "account-info">
-        <div class = "username"> User: {{account.username}} </div>
-        <div id="points-display" class = "points-display"> Current Points: {{ account.points }}</div>
+    <div class = "points-table-div {% if border %} {{ border }} {% else %} border-none {% endif %}">
+        <table class="points-table">
+            <tbody>
+                <tr class = "point-info-th-text">
+                    <th scope="row">PLAYER</th>
+                </tr>
+                <tr class = "point-info-text">
+                    <td>{{ account.username }}</td>
+                </tr>
+                <tr class = "point-info-th-text">
+                    <th scope="row">POINTS</th>
+                </tr>
+                <tr class = "point-info-text">
+                    <td>{{ account.points }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <script type="text/javascript">
@@ -24,7 +44,7 @@
     </script>  
 
     {% for category, items in categorized_items.items %}
-    <h3>{{ category|title }}</h3>
+    <h3 class = "category-h3">{{ category|title}}s</h3>
     <div class="items-container">
         {% for item in items %}
             <div class="item">
@@ -33,12 +53,12 @@
                 <div class="item-description">{{ item.description }}</div>
                 <div class="item-cost"> Cost: {{item.cost}} points</div>
                 {% if item.id in purchased_item_ids %}
-                        <button class="purchase-button" disabled>Item Owned</button>
+                    <button class="purchase-button" disabled>Item Owned</button>
                 {% else %}
                     {% if account.points >= item.cost %}
-                        <button class="purchase-button" data-item-id="{{ item.id }}">Purchase</button>
+                        <button class="btn btn-success purchase-button" data-item-id="{{ item.id }}">Purchase</button>
                     {% else %}
-                        <p>Not enough points.</p>
+                        <button class="btn btn-danger purchase-button" disabled>Not Enough Points</button>
                     {% endif %}
                 {% endif %}
             </div>

@@ -37,6 +37,18 @@
 
         <table class="account-table">
             <tbody>
+                {% if account %}
+                {% if account.picture %}
+                <tr class = "account-info-th-text">
+                    <th scope="row">PROFILE PICTURE</th>
+                </tr>
+                <tr class = "account-info-text">
+                    <td>
+                        <img src="{{ account.picture.url}}" alt="profile picture" class="profile-picture">
+                    </td>
+                </tr>
+                {% endif %}
+                {% endif %}
                 <tr class = "account-info-th-text">
                     <th scope="row">USERNAME</th>
                 </tr>
@@ -65,17 +77,12 @@
                 </tr>
             </tbody>
         </table>
-        {% if account %}
-        {% if account.picture %}
-            <img src="{{ account.picture.url}}" alt="profile picture">
-        {% endif %}
-        {% endif %}
     </div>
 
 
     <div class="welcome-div">
         <a href="{% url 'logout' %}">
-            <button class=" logout-button">Logout</button>
+            <button class="btn btn-light btn-outline-danger logout-button">Logout</button>
         </a>
     </div>
 

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Gabarito|Lato');
+@import url('https://fonts.googleapis.com/css?family=Gabarito|Lato|Press+Start+2P');
 
 .pointshop{
     padding-top: 5vh;
@@ -6,7 +6,89 @@
     margin: auto;
     display: flex;
     flex-direction: column;
-    background-color: gainsboro;
+    background-color: rgb(129, 125, 244);
+}
+
+.season{
+    font-family: "Press Start 2P";
+    font-size: 4em;
+    font-style: italic;
+    background: linear-gradient(90deg, rgba(0, 0, 255, 1) 25%, rgba(0, 128, 0, 1) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 5vh;
+}
+
+.mappys-market{
+    font-family: "Gabarito";
+    font-size: 2em;
+    margin: auto;
+    margin-bottom: 2vh;
+}
+
+.info-parent{
+    display: flex;
+    margin: auto;
+    margin-bottom: 3vh;
+    align-items: flex-start;
+}
+
+.info-container {
+    flex: 1;
+}
+
+.mappy-logo{
+    align-self: flex-start;
+    max-height: 7vh;
+    object-fit: cover;
+    padding-right: 1vh;
+}
+
+.points-table-div{
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.points-table{
+    margin: auto;
+    background-color: lavender;
+    min-width: 60%;
+    max-width: 80%;
+}
+
+.points-table th, .points-table td{
+    border: 1px solid black;
+    padding: 1vh;
+}
+
+.point-table-title{
+    font-family: 'Lato';
+    font-size: 1.5em;
+    text-align: center;
+    font-style: bolder;
+    padding-top: 10px;
+    padding-bottom: 2vh;
+}
+
+.point-info-th-text{
+    font-family: 'Press Start 2P';
+    font-size: 1.2em;
+    text-align: center;
+    font-style: bolder;
+}
+
+.point-info-text{
+    font-family: 'Lato';
+    font-size: 1em;
+    text-align: center;
+}
+
+.info-message{
+    text-align: left;
+    font-family: 'Gabarito';
+    font-size: 1.5em;
 }
 
 .account-info{
@@ -17,7 +99,7 @@
 .username, .points-display {
     width: 20%;
     font-family: "Gabarito";
-    font-size: 25px;
+    font-size: 2em;
 }
 
 .username {
@@ -30,8 +112,11 @@
 
 .item-cost {
     text-wrap: wrap;
+    padding-bottom: 2vh;
 }
 
 .purchase-button {
+    font-family: 'Press Start 2P';
+    font-size: 0.8em;
     width: 75%;
 }
