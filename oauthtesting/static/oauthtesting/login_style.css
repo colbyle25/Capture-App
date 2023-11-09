@@ -19,8 +19,8 @@ body{
 }
 
 .promo-img{
-    width: 75vh;
-    height: 50vh;
+    width: 70%;
+    max-height: 50vh;
     object-fit: cover;
     padding-bottom: 5vh;
 }
@@ -34,29 +34,25 @@ body{
 
 .login-button{
     margin: auto;
-
     font-family: 'Lato';
     font-size: 1.2em;
-
-    border-color: #edf5ff;
     cursor: pointer;
-
     font-size: 1em;
     padding: 1em 1em;
-    color: #545454;
-    background-color: #ffffff;
+    margin-bottom: 5vh;
+    color: black;
 }
 
 .info-h3{
-    padding-top: 5vh;
     font-family: 'Gabarito';
     font-style: 'bold';
     font-size: 1.5em;
     margin: auto;
+    margin-bottom: 1vh;
 }
 
 .info-p{
-    padding-top: 1vh;
+    padding-bottom: 5vh;
     font-family: 'Lato';
     font-size: 1.2em;
     margin: auto;

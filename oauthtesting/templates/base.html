@@ -22,21 +22,23 @@ Anything outside of the block will not work, so keep it all inside
 <link rel="stylesheet" href="{% static 'oauthtesting/index_style.css' %}">
 
 <body class = "{{background_color}}">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg bg-dark">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse"  id="navbar">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-text" href="{% url 'home' %}">
+                            <img src="/media/images/mappy.png" class="mappy-logo"></img>
+                        </a>
+                    </li>
                     {% if user.is_superuser %}
                     <li class="nav-item">
-                        <a class="nav-link navbar-text" href="{% url 'admin:index' %}">Admin</a>
+                        <a class="nav-link navbar-text" href="{% url 'admin:index' %}">ADMIN</a>
                     </li>
                     {% endif %}
-                    <li class="nav-item">
-                    <a class="nav-link navbar-text" href="{% url 'home' %}">Home</a>
-                    </li>
                     <li class="nav-item">
                     <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
                     </li>
@@ -50,7 +52,7 @@ Anything outside of the block will not work, so keep it all inside
                         <a class="nav-link navbar-text" href="{% url 'pointshop' %}">Point Shop</a>
                     </li>
                 </ul>
-                <form class="d-flex mb-2 mb-lg-0" method="get" action="{% url 'lookup' %}">
+                <form class="d-flex mb-2 mb-lg-0 search-form" method="get" action="{% url 'lookup' %}">
                     <input class="form-control me-2" type="text" placeholder="Search Accounts..." aria-label="Search Accounts..." name="lookup">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>

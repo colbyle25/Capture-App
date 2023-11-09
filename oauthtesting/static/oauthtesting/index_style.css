@@ -8,11 +8,15 @@
 body{
     background: var(--off-white);
 }
+.navbar-text .logo-container {
+    display: flex;
+    align-items: center;
+}
 
 .navbar-text{
     margin-left: 2vh;
-    color: white;
-    text-align: center;
+    color: var(--off-white);
+    text-align: left;
     font-family: "Gabarito";
 }
 
@@ -109,4 +113,14 @@ body{
     padding: 1em 1em;
     margin-bottom: 5vh;
     color:#545454;
+}
+
+.mappy-logo{
+    width: 5vh;
+    height: 4vh;
+    object-fit: cover;
+}
+
+.search-form{
+    font-family: 'Gabarito';
 }
