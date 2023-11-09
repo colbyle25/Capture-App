@@ -27,13 +27,27 @@
                     <th scope="row">PLAYER</th>
                 </tr>
                 <tr class = "point-info-text">
+                    {% if account %}
                     <td>{{ account.username }}</td>
+                    {% endif %}
+                    {% if not account %}
+                    <td>
+                        <a href = "{% url 'login' %}">Log in To Purchase Items</a>
+                    </td>
+                    {% endif %}
                 </tr>
                 <tr class = "point-info-th-text">
                     <th scope="row">POINTS</th>
                 </tr>
                 <tr class = "point-info-text">
+                    {% if account %}
                     <td>{{ account.points }}</td>
+                    {% endif %}
+                    {% if not account %}
+                    <td>
+                        <a href = "{% url 'login' %}">Log in To Purchase Items</a>
+                    </td>
+                    {% endif %}
                 </tr>
             </tbody>
         </table>

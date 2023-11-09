@@ -7,11 +7,11 @@
 {% load socialaccount %}
 {% providers_media_js %}
 
-<div class="account-table-div">
-        <h3 class="account-table-title">Leaderboard</h3>
-        <table class="table account-table">
+<div class="leaderboard-table-div">
+        <h3 class="leaderboard-title">Leaderboard</h3>
+        <table class="leaderboard-table">
             <thead>
-                <tr class = "account-info-th-text">
+                <tr class = "leaderboard-info-th-text">
                     <th scope="col">Rank</th>
                     <th scope="col">Username</th>
                     <th scope="col">Points</th>
@@ -24,9 +24,9 @@
                 {% elif forloop.counter == 2 %}
                 <tr style="color:silver">
                 {% elif forloop.counter == 3 %}
-                <tr style="color:brown">
+                <tr style="color:chocolate">
                 {% else %}
-                <tr class = "account-info-th-text">
+                <tr class = "leaderboard-info-th-text">
                 {% endif %}
                     <th scope="row">{{ forloop.counter }}</th>
                     {% if placement == forloop.counter %}
@@ -46,7 +46,7 @@
                 </tr>
             {% endfor %}
             {% if account %}
-                <tr class = "account-info-th-text">
+                <tr class = "leaderboard-info-th-text">
                     <th scope="row">{{ placement }}</th>
                     <td><strong>
                         <a href="{% url 'lookup' %}?lookup={{ account.username }}" style="color:inherit">{{ account.username }}</a>
