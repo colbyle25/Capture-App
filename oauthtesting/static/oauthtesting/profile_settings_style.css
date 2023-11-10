@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Gabarito|Lato');
+
+:root{
+    --off-white: #f0efeb;
+    --gray: #e5e3e1;
+}
+
 .profile-settings{
     padding-top: 5vh;
     text-align: center;
@@ -7,7 +14,30 @@
     background-color: gainsboro;
 }
 
+.profile-settings-title{
+    padding-top: 5vh;
+    font-family: 'Gabarito';
+    font-style: 'bold';
+    font-size: 2em;
+    margin: auto;
+    margin-bottom: 5vh;
+}
+
+.items-container{
+    padding-bottom: 10vh;
+    margin-bottom: 10vxh;
+}
+
+.category-title{
+    font-family: 'Lato';
+    font-style: 'bold';
+    font-size: 1.5em;
+    margin: auto;
+    margin-bottom: 1.5vh;
+}
+
 .select-button {
+    font-family: "Gabarito";
     margin-top: 10px;
 }
 
@@ -16,9 +46,11 @@
   }
          
 .apply-button {
+    font-family: "Gabarito";
     background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%);
     margin: auto;
-    margin-bottom: 50px;
+    margin-top: 3vh;
+    margin-bottom: 5vh;
     padding: 15px 45px;
     text-align: center;
     text-transform: uppercase;
@@ -28,7 +60,7 @@
     box-shadow: 0 0 20px #eee;
     border-radius: 10px;
     display: block;
-    width: 50%;
+    width: 50vh;
 }
 .apply-button:hover {
     background-position: right center; /* change the direction of the change here */

@@ -7,20 +7,21 @@
 {% load socialaccount %}
 {% providers_media_js %}
 
-<div class = "profile-background">
-  <h3 class="username">{{ user.username }}</h3>
+<body>
+    <div>
+      <h3 class="username">{{ user.username }}</h3>
 
-  <a href="{% url 'profile_settings' %}" class="settings-button">Profile Customization</a>
+      <a href="{% url 'profile_settings' %}" class="settings-button">Apply Profile Customization Items</a>
 
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-      {{ form.as_p }}
-  <button type="submit">Upload</button>
-  </form>
+      <form class="profile-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+          {{ form.as_p }}
+      <button class="btn btn-outline-primary submit-button" type="submit">Save Changes</button>
+      </form>
 
-  {% if account %}  <h3>Account created : {{account.username}}</h3>
-  <img src="{{ account.picture.url}}" alt="connect" style="max-height:300px">
-  {% endif %}
-<div>
-
+      {% if account %}  <h3>Account created : {{account.username}}</h3>
+      <img src="{{ account.picture.url}}" alt="connect" style="max-height:300px">
+      {% endif %}
+    <div>
+</body>
 {% endblock %}

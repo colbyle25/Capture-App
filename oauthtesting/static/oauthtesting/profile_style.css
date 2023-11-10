@@ -5,13 +5,49 @@
     --gray: #e5e3e1;
 }
 
+.profile-form {
+    font-family: "Gabarito";
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-form label {
+    font-family: "Gabarito";
+    margin-bottom: 3vh;
+    font-family: 'Lato';
+    font-size: 1.2em;
+    margin-right: 3vh;
+}
+
+.profile-form input[type="text"] {
+    font-family: "Gabarito";
+    width: 40vh;
+    font-family: 'Lato';
+    font-size: 1.2em;
+}
+
+.profile-form input[type="file"]{
+    font-family: "Gabarito";
+    margin: 0;
+    font-family: 'Lato';
+    font-size: 1.2em;
+}
+
+.submit-button{
+    font-family: "Gabarito";
+    margin: auto;
+    width: 50vh;
+    margin-bottom: 5vh;
+}
+
 /* https://gradientbuttons.colorion.co/ */        
 .settings-button {
+    font-family: "Gabarito";
     background-image: linear-gradient(to right, #e52d27 0%, #b31217  51%, #e52d27  100%);
     margin: auto;
-    margin-bottom: 15px;
-    margin-top: 15px;
-    padding: 15px;
+    margin-bottom: 5vh;
+    margin-top: 5vh;
+    padding: 2vh;
     text-align: center;
     text-transform: uppercase;
     transition: 0.5s;
@@ -21,7 +57,7 @@
     border-radius: 10px;
     display: block;
     text-decoration: none;
-    width: 50%;
+    width: 50vh;
   }
 
   .settings-button:hover {
@@ -46,11 +82,10 @@
     margin: auto;
 }
 
-.profile-background {
+body {
     background: var(--off-white);
     align-items: center;
     margin: auto;
-    width: 50%;
     text-align: center;
 }
 
@@ -58,6 +93,6 @@
     padding-top: 5vh;
     font-family: 'Gabarito';
     font-style: 'bold';
-    font-size: 1.5em;
+    font-size: 2em;
     margin: auto;
 }
