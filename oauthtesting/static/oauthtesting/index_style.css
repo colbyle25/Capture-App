@@ -27,11 +27,15 @@ body{
     padding-top: 5vh;
     background-color: var(--gray);
     padding-top: 2%;
-    padding-bottom: 9vh;
+    padding-bottom: 5vh;
     border: 0px;
     border-top: .5px;
     border-color: black;
     border-style: solid;
+}
+
+.footer-styling a{
+    color: black;
 }
 
 .welcome-div{
