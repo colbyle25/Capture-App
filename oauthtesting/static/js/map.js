@@ -311,7 +311,7 @@ function generateContentString(marker) {
         for (const s of split) {
             contentString += ((s.substring(0, 4) === "http") ? //Is this a web url?
             ( s.includes("youtube.com") ? //Is this a youtube video? (Note: images with the word youtube.com in it will fail)
-            "<iframe width='400' height='300' src='" + s.replace("watch?v=", "embed/") + "'></iframe>" //Add the video using an iframe
+            "<iframe width='400' height='300' src='" + s.replace("watch?v=", "embed/") + "' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe><br>" //Add the video using an iframe
             : "<img src='" + s + "' alt='Image'><br>" //Just a regular image/gif
             )
             : s + " "); //Not a webpage
