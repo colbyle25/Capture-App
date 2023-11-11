@@ -9,10 +9,10 @@ import datetime as dt
 
 class ExampleTestCase(TestCase):
     def setUp(self):
-        user1 = Account.objects.create(username="test", points=0, bio="Hi, I'm a dummy account", picture=None)
-        user2 = Account.objects.create(username="test2", points=0, bio="I like bread", picture=None)
-        user3 = Account.objects.create(username="test3", points=121121224534, bio="", picture=None)
-        user4 = Account.objects.create(username="test4", points=0, bio="Who needs friends?", picture=None)
+        user1 = Account.objects.create(username="test", points=0, bio="Hi, I'm a dummy account", picture="")
+        user2 = Account.objects.create(username="test2", points=0, bio="I like bread", picture="")
+        user3 = Account.objects.create(username="test3", points=121121224534, bio="", picture="")
+        user4 = Account.objects.create(username="test4", points=0, bio="Who needs friends?", picture="")
 
         Friends.objects.create(user1=user1, user2=user2)
         Friends.objects.create(user1=user3, user2=user1)
