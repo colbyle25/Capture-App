@@ -34,6 +34,11 @@ urlpatterns = [
     path('save_marker/', views.save_marker, name='save_marker'),
     path('delete_marker/<int:marker_id>/', views.delete_marker, name='delete_marker'),
     path('load_markers/', views.load_markers, name='load_markers'),
+    path('like/<int:id>/', views.like_marker, name='like'),
+    path('unlike/<int:id>/', views.unlike_marker, name='unlike'),
+    path('approve/<int:id>/', views.approve_marker, name='approve'),
+    path('unapprove/<int:id>/', views.unapprove_marker, name='unapprove'),
+    path('amiadmin/', views.amiadmin, name='amiadmin'),
 ]
 
 # Allows for seeing profile pictures in development server

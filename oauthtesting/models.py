@@ -106,7 +106,7 @@ class DrawingMessage(Message):
 class Like(models.Model):
     poster = models.ForeignKey(Message, on_delete=models.CASCADE)
     liker = models.ForeignKey(Account, on_delete=models.CASCADE)
-    time = models.DateTimeField()
+    # time = models.DateTimeField()
 
     # Primary Key
     class Meta:
