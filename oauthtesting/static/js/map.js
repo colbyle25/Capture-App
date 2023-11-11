@@ -2,6 +2,7 @@ var map;
 var markers = [];
 var currentMarker;
 var currentInfoWindow = null;
+var currentStreetWindow = null;
 var admView = false;
 var preid = 0;
 
@@ -113,6 +114,33 @@ function initMap() {
     LoadMarkers();
 }
 
+function handleWindowOpening(marker, location) {
+    google.maps.event.addListener(marker, "click", function (e) {
+        var contentString = generateContentString(marker, location);
+        var infoWindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+        var streetInfoWindow = new google.maps.InfoWindow({
+            content: contentString,
+            position: location,
+            disableAutoPan: true
+        });
+        if (currentInfoWindow || currentStreetWindow) {
+            currentInfoWindow.close();
+            currentStreetWindow.close();
+        }
+        infoWindow.open(map, marker);
+        if (!(marker.userMessage === "")) { //Don't render the window if in street view and it's a form (big mistake)
+            streetInfoWindow.open(map.getStreetView());
+        }
+        currentInfoWindow = infoWindow;
+        currentStreetWindow = streetInfoWindow;
+
+        addCloseEvent(infoWindow);
+        addCloseEvent(streetInfoWindow);
+    });
+}
+
 function placeNewMarker(location) {
     //https://stackoverflow.com/questions/3684274/googlemaps-v3-api-create-only-1-marker-on-click
     if (currentMarker)
@@ -135,17 +163,7 @@ function placeNewMarker(location) {
     }
     var marker = currentMarker;
 
-    google.maps.event.addListener(marker, "click", function (e) {
-        var contentString = generateContentString(marker, location);
-        var infoWindow = new google.maps.InfoWindow({
-            content: contentString
-        });
-        if (currentInfoWindow) {
-            currentInfoWindow.close();
-        }
-        infoWindow.open(map, marker);
-        currentInfoWindow = infoWindow;
-    });
+    handleWindowOpening(marker, location);
 
     markers.push(marker);
 }
@@ -167,19 +185,27 @@ function placeMarker(location, message, id, likes, liked, approved) {
     marker.liked = liked;
     marker.approved = approved;
 
-    google.maps.event.addListener(marker, "click", function (e) {
-        var contentString = generateContentString(marker, location);
-        var infoWindow = new google.maps.InfoWindow({
-            content: contentString
-        });
-        if (currentInfoWindow) {
-            currentInfoWindow.close();
-        }
-        infoWindow.open(map, marker);
-        currentInfoWindow = infoWindow;
-    });
+    handleWindowOpening(marker, location);
 
     markers.push(marker);
+}
+
+function addCloseEvent(window) { //Sync close event between street view and map view
+    google.maps.event.addListener(window,'closeclick',function(){
+        if (currentInfoWindow || currentStreetWindow) {
+            currentInfoWindow.close();
+            currentStreetWindow.close();
+        }
+    });
+}
+
+function updateInfoBoxInfo(marker) {
+    if (currentInfoWindow) {
+        currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
+    }
+    if (currentStreetWindow) {
+        currentStreetWindow.setContent(generateContentString(marker, marker.getPosition()));
+    }
 }
 
 function Like(id) {
@@ -201,9 +227,7 @@ function Like(id) {
         var marker = markers.find(marker => marker.id === id);
         marker.likes += 1;
         marker.liked = true;
-        if (currentInfoWindow) {
-            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
-        }
+        updateInfoBoxInfo(marker);
     })
     .catch(error => {
         console.error('Error during like:', error);
@@ -229,9 +253,7 @@ function Unlike(id) {
         var marker = markers.find(marker => marker.id === id);
         marker.likes -= 1;
         marker.liked = false;
-        if (currentInfoWindow) {
-            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
-        }
+        updateInfoBoxInfo(marker);
     })
     .catch(error => {
         console.error('Error during unlike:', error);
@@ -258,9 +280,7 @@ function Approve(id) {
         marker.approved = true;
         // marker.content = pinApproved;
         marker.setIcon(null);
-        if (currentInfoWindow) {
-            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
-        }
+        updateInfoBoxInfo(marker);
     })
     .catch(error => {
         console.error('Error during approval:', error);
@@ -287,9 +307,7 @@ function Unapprove(id) {
         marker.approved = false;
         // marker.content = pinUnapproved;
         marker.setIcon({url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) });
-        if (currentInfoWindow) {
-            currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
-        }
+        updateInfoBoxInfo(marker);
     })
     .catch(error => {
         console.error('Error during approval:', error);
