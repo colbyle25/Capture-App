@@ -114,14 +114,15 @@ function initMap() {
 }
 
 function placeNewMarker(location) {
+    //https://stackoverflow.com/questions/3684274/googlemaps-v3-api-create-only-1-marker-on-click
     if (currentMarker)
     {
         currentMarker.setPosition(location);
         console.log("Marker moved", currentMarker);
         return;
+
     }
     else{
-        console.log("Marker Created", currentMarker);
         currentMarker = new google.maps.Marker({
             position: location,
             map: map,
@@ -153,6 +154,7 @@ function placeNewMarker(location) {
 // Method for placing database markers.
 function placeMarker(location, message, id, likes, liked, approved) {
     console.log("Placing from db", id);
+
     var marker = new google.maps.Marker({
         position: location,
         map: map,
