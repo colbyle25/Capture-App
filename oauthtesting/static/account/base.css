@@ -9,43 +9,6 @@ body{
     background: var(--off-white);
 }
 
-.navbar-text{
-    margin-left: 2vh;
-    color: white;
-    text-align: center;
-    font-family: "Gabarito";
-}
-
-.footer-styling{
-    font-family: 'Lato';
-    font-size: 1em;
-
-    margin-top: 5vh;
-    background-color: var(--gray);
-    padding-top: 2%;
-    padding-bottom: 9vh;
-    border: 0px;
-    border-top: .5px;
-    border-color: black;
-    border-style: solid;
-}
-
-.login-div{
-    padding-top: 5vh;
-    text-align: center;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.promo-img{
-    width: 75vh;
-    height: 50vh;
-    object-fit: cover;
-    padding-bottom: 5vh;
-}
-
 .login-title{
     padding-bottom: 5vh;
     font-family: 'Gabarito';
@@ -53,7 +16,22 @@ body{
     margin: auto;
 }
 
-button{
+.login-btn-div{
+    margin: auto;
+    padding-top: 3vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* or other alignment properties */
+    align-items: center;
+}
+
+.login-button{
+    margin: 2vh;
+    padding: 2vh;
+    font-family: 'Gabarito';
+}
+
+/*button{
     margin: auto;
 
     font-family: 'Lato';
@@ -66,19 +44,4 @@ button{
     padding: 0.7em 1em;
     color: #545454;
     background-color: #ffffff;
-}
-
-.info-h3{
-    padding-top: 5vh;
-    font-family: 'Gabarito';
-    font-style: 'bold';
-    font-size: 1.5em;
-    margin: auto;
-}
-
-.info-p{
-    padding-top: 1vh;
-    font-family: 'Lato';
-    font-size: 1.2em;
-    margin: auto;
-}
+}*/

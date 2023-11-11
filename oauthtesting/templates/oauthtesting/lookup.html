@@ -7,16 +7,36 @@
 {% load socialaccount %}
 {% providers_media_js %}
 
-<div class="m-3">
+<div class="account-table-div">
     {% if account %}
         <table class="account-table">
             <tbody>
+                {% if account %}
+                {% if account.picture %}
+                <tr class = "account-info-th-text">
+                    <th scope="row">PROFILE PICTURE</th>
+                </tr>
+                <tr class = "account-info-text">
+                    <td>
+                        <img src="{{ account.picture}}" alt="profile picture" class="profile-picture">
+                    </td>
+                </tr>
+                {% endif %}
+                {% endif %}
                 <tr class = "account-info-th-text">
                     <th scope="row">USERNAME</th>
                 </tr>
                 <tr class = "account-info-text">
                     <td>{{ account.username }}</td>
                 </tr>
+                {% if user.email %}
+                <tr class = "account-info-th-text">
+                    <th scope="row">EMAIL</th>
+                </tr>
+                <tr class = "account-info-text">
+                    <td>{{ account.email }}</td>
+                </tr>
+                {% endif %}
                 <tr class = "account-info-th-text">
                     <th scope="row">BIO</th>
                 </tr>
@@ -31,13 +51,9 @@
                 </tr>
             </tbody>
         </table>
-        {% if account %}
-            {% if account.picture %}
-                <img src="{{ account.picture.url}}" alt="profile picture">
-            {% endif %}
-        {% endif %}
     {% else %}
-    <h3>No account found</h3>
+    <h3 class="error-message">Oops! We didn't find any account with that name.</h3>
+    <img class="error-img" src="/media/images/mappy_error.png"></img>
     {% endif %}
 </div>
 

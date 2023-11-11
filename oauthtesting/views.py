@@ -6,11 +6,16 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
+from django.db import transaction
+
+from django.apps import apps
+
+from collections import defaultdict
 
 from .forms import AccountForm
-from .models import Account, TextMessage, POI, Like
+from .models import Account, TextMessage, POI, Item, Purchase, Account_Profile, Like
 
 
 # Create your views here.
@@ -25,7 +30,9 @@ def home(request):
         else:
             account = Account(username=request.user, bio="", points=0, picture="")
             account.save()
-        context = {'user': request.user, 'account': account}
+        account_profile, created = Account_Profile.objects.get_or_create(user=account)
+        border_color = account_profile.border.css if account_profile.border else None
+        context = {'user': request.user, 'account': account, 'border': border_color}  
         return render(request, 'oauthtesting/index.html', context)
     return HttpResponseRedirect("/login/")
 
@@ -62,6 +69,47 @@ def profile_view(request):
     else:
         form = AccountForm()
         return render(request, 'oauthtesting/profile.html', {'form': form})
+    
+def profile_settings(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/login/")
+
+    user = Account.objects.filter(username=request.user).first()
+    purchases = Purchase.objects.filter(user=user).select_related('item')
+    categorized_items = defaultdict(list)
+
+    for purchase in purchases:
+        categorized_items[purchase.item.category].append(purchase.item)
+
+    user_profile, created = Account_Profile.objects.get_or_create(user=user)
+    selected_items = defaultdict(list)
+    if not created:
+        for category_name, _ in Item.CATEGORY_CHOICES:
+            selected_items[category_name].append(getattr(user_profile, category_name, None))
+
+    return render(request, 'oauthtesting/profile_settings.html', {'user': user, 'categorized_items': dict(categorized_items), 'selected_items': dict(selected_items)})
+
+@login_required
+@require_http_methods(["POST"])
+@transaction.atomic
+def apply_profile_settings(request):
+    data = json.loads(request.body)
+    user = Account.objects.filter(username=request.user).first()
+    user_profile = Account_Profile.objects.filter(user=user).first()
+
+    if not user_profile:
+        return JsonResponse({'success': False, 'error': 'User profile does not exist.'}, status=404)
+
+    for category, item_id in data.items():
+        if item_id == 'None':
+            setattr(user_profile, category, None)
+        else:
+            item = get_object_or_404(Item, id=item_id)
+            setattr(user_profile, category, item)
+    
+    user_profile.save()
+    messages.success(request, 'Successfully updated profile')
+    return JsonResponse({'success': True})
 
 
 def map(request):
@@ -120,6 +168,35 @@ def leaderboard(request):
     context = {'accounts': accounts[:5], 'account': account, 'placement': placement}
     return render(request, 'oauthtesting/leaderboard.html', context)
 
+def pointshop(request):
+    items = Item.objects.all()
+    user = Account.objects.filter(username=request.user).first()
+    purchased_item_ids = Purchase.objects.filter(user=user).values_list('item_id', flat=True)
+
+    categorized_items = defaultdict(list)
+    for item in items:
+        categorized_items[item.category].append(item)
+
+    return render(request, 'oauthtesting/pointshop.html', {
+        'account': Account.objects.filter(username=request.user).first(),
+        'categorized_items': dict(categorized_items),
+        'purchased_item_ids': purchased_item_ids})
+
+@require_http_methods(["POST"])
+@transaction.atomic
+def purchase_item(request, item_id):
+    item = Item.objects.get(id = item_id)
+    user = Account.objects.filter(username=request.user).first()
+    if user.points >= item.cost:
+        user.points -= item.cost
+        user.save()
+
+        Purchase.objects.create(user = user, item=item)
+        return JsonResponse({'success': True,
+                             'new_points_total': user.points})
+    else:
+        return JsonResponse({'success': False, 'error': 'Not enough points'})
+    
 
 @require_http_methods(["POST"])
 def save_marker(request):

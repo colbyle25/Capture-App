@@ -114,6 +114,7 @@ function initMap() {
 }
 
 function placeNewMarker(location) {
+    //https://stackoverflow.com/questions/3684274/googlemaps-v3-api-create-only-1-marker-on-click
     if (currentMarker)
     {
         currentMarker.setPosition(location);
@@ -121,7 +122,6 @@ function placeNewMarker(location) {
         return;
     }
     else{
-        console.log("Marker Created", currentMarker);
         currentMarker = new google.maps.Marker({
             position: location,
             map: map,
@@ -306,8 +306,14 @@ function generateContentString(marker) {
     } else {
         marker.likes = marker.likes ? marker.likes : 0;
         marker.liked = marker.liked ? marker.liked : false;
-        contentString += marker.userMessage + '<br>';
-        contentString += marker.likes + " likes -- ";
+
+        split = marker.userMessage.split(" ");
+        for (const s of split) {
+            contentString += ((s.substring(0, 4) === "http") //Is this an image? If so, image-a-fy it
+            ? "<img src='" + s + "' alt='Image'><br>" : s + " ");
+        }
+
+        contentString += "<br>" + marker.likes + " likes -- ";
         if (!marker.liked) {
             contentString += '<input type="button" class="saveButton" onclick="Like(' + marker.id + ');" value="Like">';
         } else {
@@ -423,4 +429,3 @@ function LoadMarkers() {
         console.error('There has been a problem with your fetch operation:', error);
     });
 }
-

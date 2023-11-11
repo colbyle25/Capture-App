@@ -1,0 +1,143 @@
+.preview {
+    width: 100px;
+    height: 100px;
+    border: 5px solid #ccc;
+}
+
+.items-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    flex-direction: row;
+}
+
+.item {
+    border: 5px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: lavender;
+    align-items: center;
+    height: 350px;
+    width: 200px;
+}
+
+.category-h3{
+    font-family: "Press Start 2P";
+    font-size: 3em;
+    background: linear-gradient(90deg, rgba(0, 0, 255, 1) 10%, rgba(0, 128, 0, 1) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 3vh;
+    padding-top: 5vh;
+}
+
+.item.selected{
+    border: 5px solid red;
+}
+
+.item-name {
+    font-weight: normal;
+    font-size: 20px;
+    font-family: "Gabarito";
+    min-width: 20%;
+    text-align: center;
+    text-wrap: wrap;
+}
+
+.item-description {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    min-width: 20%;
+    text-align: center;
+    text-wrap: wrap;
+}
+
+.bg-bronze {
+    background-color:chocolate;
+}
+
+.bg-silver {
+    background-color: silver;
+}
+
+.bg-gold {
+    background-color: gold;
+}
+
+.bg-blue {
+    background-color: blue;
+}
+
+.bg-green {
+    background-color: green;
+}
+
+/* https://cssgradient.io/ */
+.bg-blue-green-grad {
+    background: rgb(0,0,255);
+    background: linear-gradient(90deg, rgba(0,0,255,1) 35%, rgba(0,128,0,1) 100%);
+}
+
+/* https://css-tricks.com/stripes-css/ */
+.bg-blue-green-stripes {
+    background: repeating-linear-gradient(
+        45deg,
+        blue,
+        blue 10px,
+        green 10px,
+        green 20px
+        );
+}
+
+.border-none {
+    border: 10px solid transparent;
+}
+
+.border-bronze {
+    border: 10px solid chocolate;
+    border-radius: 10px;
+    background-origin: border-box;
+    background-clip: content-box, border-box
+}
+
+.border-silver {
+    border: 10px solid silver;
+    border-radius: 10px;
+    background-origin: border-box;
+    background-clip: content-box, border-box
+}
+
+.border-gold {
+    border: 10px solid gold;
+    border-radius: 10px;
+    background-origin: border-box;
+    background-clip: content-box, border-box
+}
+
+.border-red {
+    border: 10px solid red;
+    border-radius: 10px;
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+
+.border-blue-green-grad {
+    border: double 10px transparent;
+    border-radius: 10px;
+    background-image: linear-gradient(white, white), radial-gradient(circle at top left, rgba(0,0,255,1) 35%, rgba(0,128,0,1) 100%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+
+

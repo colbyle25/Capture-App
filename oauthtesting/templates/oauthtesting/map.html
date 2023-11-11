@@ -13,7 +13,7 @@
         <div class="invisible position-absolute">
             {% if account %}
                 {% if account.picture %}
-                    <img src="{{ account.picture.url}}" alt="profile picture">
+                    <img src="{{ account.picture}}" alt="profile picture">
                 {% endif %}
             {% endif %}
         </div>
@@ -26,17 +26,6 @@
         <script> var pois = {{pois|safe}} </script>
         <script src = "{% static 'js/map.js' %}"></script>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHO1XcQLlUn6V7sRyRzKDzrzBGl7h97F0&callback=initMap&libraries=maps,marker&v=beta"></script>
-
-        <footer class = 'footer footer-styling'>
-            <div class = "text-center">
-                <p>
-                    Copyright 2023
-                </p>
-                <p>
-                    This is the ouathtesting for the capture app.
-                </p>
-            </div>
-          </footer>
       
     </body>
 </html>

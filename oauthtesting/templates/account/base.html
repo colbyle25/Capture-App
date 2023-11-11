@@ -10,49 +10,48 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block head_title %}{% endblock head_title %}</title>
-    {% block extra_head %}
-    {% endblock extra_head %}
-  </head>
-  <body>
-    <div class="m-3"> <!-- I know what blocks are now, ask Jared if you have questions -->
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block head_title %}{% endblock head_title %}</title>
+        {% block extra_head %}
+        {% endblock extra_head %}
+    </head>
 
-    {% block body %}
+    <body>
+        <!-- I know what blocks are now, ask Jared if you have questions -->
 
-    {% if messages %}
-    <div>
-      <strong>{% trans "Messages:" %}</strong>
-      <ul>
-        {% for message in messages %}
-        <li>{{message}}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
+        {% block body %}
 
-    <div>
-      <strong>{% trans "" %}</strong>
-        <button class = "login-button" onclick="window.location.href='{% provider_login_url 'google' %}'">{% trans "Sign In via Google" %}</button>
-        <button class = "login-button" onclick="window.location.href='{% url 'account_login' %}'">{% trans "Sign In via Capture" %}</button>
-        <button class = "login-button" onclick="window.location.href='{% url 'account_signup' %}'">{% trans "Sign Up via Capture" %}</button>
-      <ul>
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
-        <li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
-        {% else %}
-
+        {% if messages %}
+        <div>
+          <strong>{% trans "Messages:" %}</strong>
+          <ul>
+            {% for message in messages %}
+            <li>{{message}}</li>
+            {% endfor %}
+          </ul>
+        </div>
         {% endif %}
-      </ul>
-    </div>
-    {% block content %}
-    {% endblock content %}
-    {% endblock body %}
-    {% block extra_body %}
-    {% endblock extra_body %}
-    </div>
-  </body>
+
+        <div class="login-btn-div md-3">
+            <strong>{% trans "" %}</strong>
+                <button class = "btn btn-primary login-button" onclick="window.location.href='{% provider_login_url 'google' %}'">{% trans "Sign In via Google" %}</button>
+                <button class = "btn btn-primary login-button" onclick="window.location.href='{% url 'account_login' %}'">{% trans "Sign In via Capture" %}</button>
+                <button class = "btn btn-primary login-button" onclick="window.location.href='{% url 'account_signup' %}'">{% trans "Sign Up via Capture" %}</button>
+            <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+                <li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+            {% endif %}
+            </ul>
+        </div>
+        
+        {% block content %}
+        {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+      </body>
 </html>
 {% endblock %}

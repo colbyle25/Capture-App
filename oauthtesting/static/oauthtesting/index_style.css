@@ -8,11 +8,15 @@
 body{
     background: var(--off-white);
 }
+.navbar-text .logo-container {
+    display: flex;
+    align-items: center;
+}
 
 .navbar-text{
     margin-left: 2vh;
-    color: white;
-    text-align: center;
+    color: var(--off-white);
+    text-align: left;
     font-family: "Gabarito";
 }
 
@@ -20,14 +24,18 @@ body{
     font-family: 'Lato';
     font-size: 1em;
 
-    margin-top: 5vh;
+    padding-top: 5vh;
     background-color: var(--gray);
     padding-top: 2%;
-    padding-bottom: 9vh;
+    padding-bottom: 5vh;
     border: 0px;
     border-top: .5px;
     border-color: black;
     border-style: solid;
+}
+
+.footer-styling a{
+    color: black;
 }
 
 .welcome-div{
@@ -36,21 +44,25 @@ body{
     margin: auto;
 }
 
-
 .account-table-div{
     justify-content: center;
     display: flex;
     flex-direction: column;
     margin: auto;
-    width: 50vh;
-    padding-top: 5vh;
+    min-width: 60vh;
+    max-width: 80vh;
+    background: var(--off-white);
 }
 
 .account-table th, .account-table td {
     border: 1px solid black;
     padding: 1vh;
-    /*padding-left: 15vh;
-    padding-right: 15vh;*/
+}
+
+.profile-picture{
+    max-width: 100%;
+    height: 40vh;
+    object-fit: cover;
 }
 
 .welcome-text{
@@ -59,6 +71,7 @@ body{
     color: rgb(204, 27, 27);
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 
 .account-table-title{
@@ -66,6 +79,7 @@ body{
     font-size: 1.5em;
     text-align: center;
     font-style: bolder;
+    padding-top: 10px;
     padding-bottom: 2vh;
 }
 
@@ -97,11 +111,20 @@ body{
     font-family: 'Lato';
     font-size: 1.2em;
 
-    border-color: #edf5ff;
     cursor: pointer;
 
     font-size: 1em;
     padding: 1em 1em;
+    margin-bottom: 5vh;
     color:#545454;
-    background-color: #ffffff;
+}
+
+.mappy-logo{
+    width: 5vh;
+    height: 4vh;
+    object-fit: cover;
+}
+
+.search-form{
+    font-family: 'Gabarito';
 }
