@@ -20,11 +20,11 @@
             <tbody>
             {% for acc in accounts %}
                 {% if forloop.counter == 1 %}
-                <tr style="color:gold">
+                <tr style="color:gold" class = "account-info-th-text">
                 {% elif forloop.counter == 2 %}
-                <tr style="color:silver">
+                <tr style="color:silver" class = "account-info-th-text">
                 {% elif forloop.counter == 3 %}
-                <tr style="color:brown">
+                <tr style="color:brown" class = "account-info-th-text">
                 {% else %}
                 <tr class = "account-info-th-text">
                 {% endif %}
