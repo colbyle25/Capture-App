@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
 {% block html %}
-<h1>Admin Approval</h1>
-    {% if messages %}
+
+{% if messages %}
     {% for message in messages %}
         <div class="alert alert-success" role="alert">
             {{ message }}
         </div>
     {% endfor %}
 {% endif %}
-<br/><br>
+
+<br/><br/>
 
 <form action="{% url 'admin_approval' %}" method="post">
     {% csrf_token %}
@@ -17,15 +18,19 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
+                <th scope="col"><a href="?sort=username">Username</a></th>
                 <th scope="col">Message</th>
-                <th scope="col">Approve</th>
+                <th scope="col"><a href="?sort=time">Time</a></th>
+                <th scope="col"><a href="?sort=approved">Approve</a></th>
             </tr>
         </thead>
         <tbody>
             {% for message in text_message_list %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ message }}</td>
+                    <td>{{ message.username }}</td>
+                    <td>{{ message.message }}</td>
+                    <td>{{ message.time }}</td>
                     <td>
                         <input type="hidden" name="message_ids" value="{{ message.id }}">
                         <input type="checkbox" name="approved_{{ message.id }}" value="true" {% if message.approved %} checked {% endif %}>
@@ -33,7 +38,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="3">No messages available.</td>
+                    <td colspan="6">No messages available.</td>
                 </tr>
             {% endfor %}
         </tbody>

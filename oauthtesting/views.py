@@ -291,18 +291,23 @@ def amiadmin(request):
     return JsonResponse({'admin': request.user.is_superuser})
 
 def admin_approval(request):
-    text_message_list = TextMessage.objects.all().order_by('-time')
-    if request.user.is_superuser:
-        if request.method == 'POST':
-            message_ids = request.POST.getlist('message_ids')
-            for id in message_ids:
-                message = TextMessage.objects.get(id=id)
-                message.approved = request.POST.get(f'approved_{id}', 'false') == 'true'
-                message.save()
-
-            messages.success(request, 'Successfully updated messages')
-        return render(request, 'oauthtesting/admin_approval.html', {'text_message_list': text_message_list})
-    else:
+    if not request.user.is_superuser:
         return HttpResponseRedirect("/")
 
-    return render(request, 'oauthtesting/admin_approval.html')
+    # Handle sorting
+    sort_by = request.GET.get('sort', '-time')  # Default sort is by time in descending order
+    if sort_by not in ['username', 'time', 'approved', '-time', '-username', '-approved']:
+        sort_by = '-time'  # Fallback to default if sort parameter is not recognized
+
+    text_message_list = TextMessage.objects.all().order_by(sort_by)
+
+    if request.method == 'POST':
+        message_ids = request.POST.getlist('message_ids')
+        for id in message_ids:
+            message = TextMessage.objects.get(id=id)
+            message.approved = request.POST.get(f'approved_{id}', 'false') == 'true'
+            message.save()
+
+        messages.success(request, 'Successfully updated messages')
+
+    return render(request, 'oauthtesting/admin_approval.html', {'text_message_list': text_message_list})
