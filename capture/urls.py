@@ -43,6 +43,7 @@ urlpatterns = [
     path('approve/<int:id>/', views.approve_marker, name='approve'),
     path('unapprove/<int:id>/', views.unapprove_marker, name='unapprove'),
     path('amiadmin/', views.amiadmin, name='amiadmin'),
+    path('admin_approval/', views.admin_approval, name='admin_approval'),
 ]
 
 # Allows for seeing profile pictures in development server

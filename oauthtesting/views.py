@@ -289,3 +289,24 @@ def unlike_marker(request, id):
 @login_required
 def amiadmin(request):
     return JsonResponse({'admin': request.user.is_superuser})
+
+def admin_approval(request):
+    if not request.user.is_superuser:
+        return HttpResponseRedirect("/")
+
+    sort_by = request.GET.get('sort', '-time')  # Default sort is by time in descending order
+    if sort_by not in ['username', 'time', 'message', 'approved', '-time', '-username', '-message', '-approved']:
+        sort_by = '-time'
+
+    text_message_list = TextMessage.objects.all().order_by(sort_by)
+
+    if request.method == 'POST':
+        message_ids = request.POST.getlist('message_ids')
+        for id in message_ids:
+            message = TextMessage.objects.get(id=id)
+            message.approved = request.POST.get(f'approved_{id}', 'false') == 'true'
+            message.save()
+
+        messages.success(request, 'Successfully updated messages')
+
+    return render(request, 'oauthtesting/admin_approval.html', {'text_message_list': text_message_list})
