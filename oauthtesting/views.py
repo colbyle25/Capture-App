@@ -155,7 +155,7 @@ def lookup(request):
             context['account'] = account
 
             # Fetch the most recent TextMessage for this account
-            latest_message = TextMessage.objects.filter(username=account).order_by('-time').first()
+            latest_message = TextMessage.objects.filter(username=account, approved=True).order_by('-time').first()
             context['latest_message'] = latest_message
 
         except Account.DoesNotExist:

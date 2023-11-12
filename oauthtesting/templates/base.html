@@ -35,12 +35,15 @@ Anything outside of the block will not work, so keep it all inside
                         </a>
                     </li>
                     {% if user.is_superuser %}
-                    <li class="nav-item">
-                        <a class="nav-link navbar-text" href="{% url 'admin:index' %}">ADMIN</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            ADMIN
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{% url 'admin_approval' %}">Approval</a></li>
+                        </ul>
                     </li>
-                        <li class="nav-item">
-                            <a class="nav-link navbar-text" href="{% url 'admin_approval' %}">Approval</a>
-                        </li>
                     {% endif %}
                     <li class="nav-item">
                     <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>
