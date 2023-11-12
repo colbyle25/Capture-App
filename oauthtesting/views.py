@@ -299,6 +299,8 @@ def admin_approval(request):
                 message = TextMessage.objects.get(id=id)
                 message.approved = request.POST.get(f'approved_{id}', 'false') == 'true'
                 message.save()
+
+            messages.success(request, 'Successfully updated messages')
         return render(request, 'oauthtesting/admin_approval.html', {'text_message_list': text_message_list})
     else:
         return HttpResponseRedirect("/")
