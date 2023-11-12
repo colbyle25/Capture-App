@@ -64,7 +64,13 @@
                             <th scope="row">LATEST MESSAGE</th>
                         </tr>
                         <tr class="account-info-text">
-                            <td>{{ latest_message.message }}</td>
+                            <td>
+                                {% if latest_message.message|urlize != latest_message.message %}
+                                    <iframe src="{{ latest_message.message }}" style="width: 400px; height: 300px;"></iframe>
+                                {% else %}
+                                    {{ latest_message.message|urlize }}
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr class="account-info-th-text">
                             <th scope="row">TIME</th>

@@ -19,7 +19,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col"><a href="?sort=username">Username</a></th>
-                <th scope="col">Message</th>
+                <th scope="col"><a href="?sort=message">Message</a></th>
                 <th scope="col"><a href="?sort=time">Time</a></th>
                 <th scope="col"><a href="?sort=approved">Approve</a></th>
             </tr>
@@ -29,7 +29,13 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ message.username }}</td>
-                    <td>{{ message.message }}</td>
+                    <td>
+                        {% if message.message|urlize != message.message %}
+                            <iframe src="{{ message.message }}" style="width: 400px; height: 300px;"></iframe>
+                        {% else %}
+                            {{ message.message }}
+                        {% endif %}
+                    </td>
                     <td>{{ message.time }}</td>
                     <td>
                         <input type="hidden" name="message_ids" value="{{ message.id }}">

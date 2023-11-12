@@ -294,10 +294,9 @@ def admin_approval(request):
     if not request.user.is_superuser:
         return HttpResponseRedirect("/")
 
-    # Handle sorting
     sort_by = request.GET.get('sort', '-time')  # Default sort is by time in descending order
-    if sort_by not in ['username', 'time', 'approved', '-time', '-username', '-approved']:
-        sort_by = '-time'  # Fallback to default if sort parameter is not recognized
+    if sort_by not in ['username', 'time', 'message', 'approved', '-time', '-username', '-message', '-approved']:
+        sort_by = '-time'
 
     text_message_list = TextMessage.objects.all().order_by(sort_by)
 
