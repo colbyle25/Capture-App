@@ -37,8 +37,10 @@ Anything outside of the block will not work, so keep it all inside
                     {% if user.is_superuser %}
                     <li class="nav-item">
                         <a class="nav-link navbar-text" href="{% url 'admin:index' %}">ADMIN</a>
-                        <a class="nav-link navbar-text" href="{% url 'admin_approval' %}">Approval</a>
                     </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-text" href="{% url 'admin_approval' %}">Approval</a>
+                        </li>
                     {% endif %}
                     <li class="nav-item">
                     <a class="nav-link navbar-text" href="{% url 'map' %}">Map</a>

@@ -30,7 +30,7 @@ class Account(models.Model):
     points = models.IntegerField()
 
     # Optional
-    bio = models.CharField(max_length=BIOGRAPHY_LENGTH)
+    bio = models.CharField(max_length=BIOGRAPHY_LENGTH, default="A user")
     picture = models.ImageField(upload_to=account_url)
 
     def __str__(self):
