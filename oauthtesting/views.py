@@ -198,10 +198,17 @@ def pointshop(request):
     categorized_items = defaultdict(list)
     for item in items:
         categorized_items[item.category].append(item)
+    
+    
+    quants = defaultdict(int)
+    for purc in Purchase.objects.filter(user=user):
+        quants[purc.item.name] += 1
+    qs = [(a, quants[a]) for a in quants]
 
     return render(request, 'oauthtesting/pointshop.html', {
         'account': Account.objects.filter(username=request.user).first(),
         'categorized_items': dict(categorized_items),
+        'quants': qs,
         'purchased_item_ids': purchased_item_ids})
 
 

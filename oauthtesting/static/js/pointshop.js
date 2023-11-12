@@ -17,8 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('points-display').textContent = `Current Points: ${data.new_points_total}`;
-                    button.textContent = 'Item Owned';
+                    // document.getElementById('points-display').textContent = `Current Points: ${data.new_points_total}`;
+                    // button.textContent = 'Item Owned';
+                    document.location.reload();
                 } else {
                     button.disabled = false; 
                 }

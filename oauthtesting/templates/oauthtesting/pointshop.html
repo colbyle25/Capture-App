@@ -67,7 +67,15 @@
                 <div class="item-description">{{ item.description }}</div>
                 <div class="item-cost"> Cost: {{item.cost}} points</div>
                 {% if item.id in purchased_item_ids %}
-                    <button class="purchase-button" disabled>Item Owned</button>
+                    {% if item.category == 'renewable' %}
+                        {% for a,b in quants %}
+                            {% if a == item.name %}
+                                <button class="btn btn-success purchase-button" data-item-id="{{ item.id }}">{{ b }} owned</button>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <button class="purchase-button" disabled>Item Already Owned</button>
+                    {% endif %}
                 {% else %}
                     {% if account.points >= item.cost %}
                         <button class="btn btn-success purchase-button" data-item-id="{{ item.id }}">Purchase</button>

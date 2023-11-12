@@ -127,10 +127,11 @@ class Like(models.Model):
 class Item(models.Model):
     CATEGORY_CHOICES = (
         ('background', 'Background'),
-        ('border', 'Border')
+        ('border', 'Border'),
+        ('renewable', 'Renewable')
     )
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     cost = models.IntegerField()
     css = models.CharField(max_length=100, blank=True)
