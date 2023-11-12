@@ -112,7 +112,7 @@ class Like(models.Model):
         constraints = [models.UniqueConstraint(fields=['poster', 'liker'], name='like_id')]
 
     def __str__(self):
-        return str(self.liker) + " liked " + str(self.poster) + "'s post from " + str(self.time)
+        return str(self.liker) + " liked " + str(self.poster) + "'s post from " #+ str(self.time)
 
 class Item(models.Model):
     CATEGORY_CHOICES = (
