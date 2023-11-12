@@ -63,5 +63,21 @@ class ExampleTestCase(TestCase):
         self.assertEqual(text.message, "This is another message")
         self.assertEqual(text2.message, "This is another another message")
 
+    def test_html_text(self):
+        t = timezone.now()
+        user2 = Account.objects.get(username="test2")
+        text = TextMessage.objects.create(username=user2, time=t, longitude=0, latitude=0, message="<h1>BIG WORDS</h1>")
+        self.assertTrue(text.has_html())
+        self.assertTrue(not text.has_script())
 
-    #def
+    def test_no_html_text(self):
+        t = timezone.now()
+        user2 = Account.objects.get(username="test2")
+        text = TextMessage.objects.create(username=user2, time=t, longitude=0, latitude=0, message="regular message, no html <3")
+        self.assertTrue(not text.has_html())
+
+    def test_embed_script(self):
+        t = timezone.now()
+        user2 = Account.objects.get(username="test2")
+        text = TextMessage.objects.create(username=user2, time=t, longitude=0, latitude=0, message="<script>alert('evil script hehe');</script>")
+        self.assertTrue(text.has_script())

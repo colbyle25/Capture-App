@@ -95,6 +95,12 @@ class TextMessage(Message):
     def __str__(self):
         return str(self.username) + ": " + str(self.message)
 
+    def has_html(self):
+        return "<" in self.message and ">" in self.message
+
+    def has_script(self):
+        return self.has_html() and "script" in self.message
+
 
 class DrawingMessage(Message):
     data = models.FileField(upload_to=DRAWING_FILE_LOCATION)
