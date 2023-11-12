@@ -35,7 +35,7 @@
                                 {% if item.type == 'youtube' %}
                                     <iframe width="400" height="300" src="{{ item.url }}" allowfullscreen></iframe>
                                 {% elif item.type == 'url' %}
-                                    <a href="{{ item.url }}" target="_blank">{{ item.url }}</a>
+                                    <iframe width="400" height="300" src="{{ item.url }}" allowfullscreen></iframe>
                                 {% else %}
                                     {{ item.text }}
                                 {% endif %}
