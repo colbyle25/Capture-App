@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import re
 
 from django.conf import settings
 from django.contrib import messages
@@ -18,7 +19,6 @@ from .forms import AccountForm
 from .models import Account, TextMessage, POI, Item, Purchase, Account_Profile, Like
 
 
-
 # Create your views here.
 
 def home(request):
@@ -33,7 +33,7 @@ def home(request):
             account.save()
         account_profile, created = Account_Profile.objects.get_or_create(user=account)
         border_color = account_profile.border.css if account_profile.border else None
-        context = {'user': request.user, 'account': account, 'border': border_color}  
+        context = {'user': request.user, 'account': account, 'border': border_color}
         return render(request, 'oauthtesting/index.html', context)
     return HttpResponseRedirect("/login/")
 
@@ -68,7 +68,8 @@ def profile_view(request):
     else:
         form = AccountForm()
         return render(request, 'oauthtesting/profile.html', {'form': form})
-    
+
+
 def profile_settings(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/")
@@ -86,7 +87,9 @@ def profile_settings(request):
         for category_name, _ in Item.CATEGORY_CHOICES:
             selected_items[category_name].append(getattr(user_profile, category_name, None))
 
-    return render(request, 'oauthtesting/profile_settings.html', {'user': user, 'categorized_items': dict(categorized_items), 'selected_items': dict(selected_items)})
+    return render(request, 'oauthtesting/profile_settings.html',
+                  {'user': user, 'categorized_items': dict(categorized_items), 'selected_items': dict(selected_items)})
+
 
 @login_required
 @require_http_methods(["POST"])
@@ -105,7 +108,7 @@ def apply_profile_settings(request):
         else:
             item = get_object_or_404(Item, id=item_id)
             setattr(user_profile, category, item)
-    
+
     user_profile.save()
     messages.success(request, 'Successfully updated profile')
     return JsonResponse({'success': True})
@@ -142,20 +145,17 @@ def map(request):
 
 
 def lookup(request):
-    context = {'account': None, 'latest_message': None}
-
+    context = {'account': None, 'latest_message': None, 'latest_message_content': None}
     if request.method == 'GET':
         username_query = request.GET.get('lookup')
         print("user: " + username_query)
-
         try:
             account = Account.objects.get(username=username_query)
             context['account'] = account
-
-            # Fetch the most recent TextMessage for this account
             latest_message = TextMessage.objects.filter(username=account, approved=True).order_by('-time').first()
-            context['latest_message'] = latest_message
-
+            if latest_message:
+                context['latest_message'] = latest_message
+                context['latest_message_content'] = parse_message_content(latest_message.message)
         except Account.DoesNotExist:
             print("Account not found")
 
@@ -176,6 +176,7 @@ def leaderboard(request):
     context = {'accounts': accounts[:5], 'account': account, 'placement': placement}
     return render(request, 'oauthtesting/leaderboard.html', context)
 
+
 def pointshop(request):
     items = Item.objects.all()
     user = Account.objects.filter(username=request.user).first()
@@ -190,21 +191,22 @@ def pointshop(request):
         'categorized_items': dict(categorized_items),
         'purchased_item_ids': purchased_item_ids})
 
+
 @require_http_methods(["POST"])
 @transaction.atomic
 def purchase_item(request, item_id):
-    item = Item.objects.get(id = item_id)
+    item = Item.objects.get(id=item_id)
     user = Account.objects.filter(username=request.user).first()
     if user.points >= item.cost:
         user.points -= item.cost
         user.save()
 
-        Purchase.objects.create(user = user, item=item)
+        Purchase.objects.create(user=user, item=item)
         return JsonResponse({'success': True,
                              'new_points_total': user.points})
     else:
         return JsonResponse({'success': False, 'error': 'Not enough points'})
-    
+
 
 @require_http_methods(["POST"])
 def save_marker(request):
@@ -223,13 +225,14 @@ def save_marker(request):
     )
     return JsonResponse({'id': marker_message.id, 'status': 'success'})
 
+
 @login_required
 @require_http_methods(["DELETE"])
 def delete_marker(request, marker_id):
     marker = get_object_or_404(TextMessage, pk=marker_id)
     me = Account.objects.filter(username=request.user).first()
     if (marker.username != me
-        and not request.user.is_superuser):
+            and not request.user.is_superuser):
         return HttpResponse(status=403)
     marker.delete()
     return JsonResponse({'status': 'success', 'message': 'Marker deleted'})
@@ -244,6 +247,7 @@ def approve_marker(request, id):
     marker.save()
     return JsonResponse({'status': 'success', 'message': 'Marker approved'})
 
+
 @login_required
 def unapprove_marker(request, id):
     if not request.user.is_superuser:
@@ -253,16 +257,20 @@ def unapprove_marker(request, id):
     marker.save()
     return JsonResponse({'status': 'success', 'message': 'Marker unapproved'})
 
+
 @login_required
 def load_markers(request):
-    markers = TextMessage.objects.filter(approved=True) if not request.user.is_superuser else TextMessage.objects.filter()
+    markers = TextMessage.objects.filter(
+        approved=True) if not request.user.is_superuser else TextMessage.objects.filter()
     markers_data = list(markers.values('id', 'latitude', 'longitude', 'message', 'approved'))
     for x in markers_data:
         mk = TextMessage.objects.get(id=x['id'])
         i = x['id']
         x['likes'] = Like.objects.filter(poster=mk).count()
-        x['liked'] = Like.objects.filter(poster=mk,liker=Account.objects.filter(username=request.user).first()).count() > 0
+        x['liked'] = Like.objects.filter(poster=mk,
+                                         liker=Account.objects.filter(username=request.user).first()).count() > 0
     return JsonResponse(markers_data, safe=False)
+
 
 @login_required
 def like_marker(request, id):
@@ -276,6 +284,7 @@ def like_marker(request, id):
     )
     return JsonResponse({'status': 'success', 'message': 'Like added'})
 
+
 @login_required
 def unlike_marker(request, id):
     marker = get_object_or_404(TextMessage, pk=id)
@@ -286,9 +295,11 @@ def unlike_marker(request, id):
     like.delete()
     return JsonResponse({'status': 'success', 'message': 'Like removed'})
 
+
 @login_required
 def amiadmin(request):
     return JsonResponse({'admin': request.user.is_superuser})
+
 
 def admin_approval(request):
     if not request.user.is_superuser:
@@ -309,4 +320,23 @@ def admin_approval(request):
 
         messages.success(request, 'Successfully updated messages')
 
+    for message in text_message_list:
+        message.processed_content = parse_message_content(message.message)
     return render(request, 'oauthtesting/admin_approval.html', {'text_message_list': text_message_list})
+
+
+def parse_message_content(message):
+    words = message.split()
+    parsed_content = []
+
+    for word in words:
+        if word.startswith("http"):
+            if "youtube.com" in word:
+                embed_url = word.replace("watch?v=", "embed/").replace("shorts/", "embed/")
+                parsed_content.append({'type': 'youtube', 'url': embed_url})
+            else:
+                parsed_content.append({'type': 'url', 'url': word})
+        else:
+            parsed_content.append({'type': 'text', 'text': word})
+
+    return parsed_content

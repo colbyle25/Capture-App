@@ -65,11 +65,17 @@
                         </tr>
                         <tr class="account-info-text">
                             <td>
-                                {% if latest_message.message|urlize != latest_message.message %}
-                                    <iframe src="{{ latest_message.message }}" style="width: 400px; height: 300px;"></iframe>
-                                {% else %}
-                                    {{ latest_message.message|urlize }}
-                                {% endif %}
+                                <div class="message-content">
+                                    {% for item in latest_message_content %}
+                                        {% if item.type == 'youtube' %}
+                                            <iframe width="400" height="300" src="{{ item.url }}" allowfullscreen></iframe><br>
+                                        {% elif item.type == 'url' %}
+                                            <a href="{{ item.url }}" target="_blank">{{ item.url }}</a>
+                                        {% else %}
+                                            {{ item.text }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
                             </td>
                         </tr>
                         <tr class="account-info-th-text">
