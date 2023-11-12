@@ -63,3 +63,5 @@ class ExampleTestCase(TestCase):
         self.assertEqual(text.message, "This is another message")
         self.assertEqual(text2.message, "This is another another message")
 
+
+    #def

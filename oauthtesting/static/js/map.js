@@ -141,6 +141,24 @@ function handleWindowOpening(marker, location) {
     });
 }
 
+function getMarkerIcon(marker_id) {
+    switch (marker_id) {
+    case 0:
+        return "https://maps.google.com/mapfiles/kml/shapes/info_circle.png";
+        break;
+    case 1:
+        return "https://maps.google.com/mapfiles/ms/icons/orange-dot.png";
+        break;
+    case 2:
+        return "https://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+        break;
+    case 3:
+        return "https://maps.google.com/mapfiles/kml/shapes/movies.png";
+        break;
+    }
+    return "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+}
+
 function placeNewMarker(location) {
     //https://stackoverflow.com/questions/3684274/googlemaps-v3-api-create-only-1-marker-on-click
     if (currentMarker)
@@ -155,7 +173,7 @@ function placeNewMarker(location) {
             map: map,
             draggable: true,  // Allows users to drag and adjust the marker position if desired
             // content: pinUnapproved,
-            icon: {url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) },
+            icon: {url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) },
         })
         currentMarker.protoid = preid++;
         currentMarker.userMessage = "";
@@ -177,7 +195,9 @@ function placeMarker(location, message, id, likes, liked, approved) {
         draggable: false,
         // content: approved ? pinApproved : pinUnapproved,
     })
-    if (!approved) marker.setIcon({url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) });
+    if (!approved) marker.setIcon({url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) });
+    else if (message.includes("youtube.com")) marker.setIcon({url: getMarkerIcon(3), scaledSize: new google.maps.Size(40, 40) });
+    else if (message.includes("http")) { message.split(" ").forEach(s => { if (s.substring(0, 4) === "http") marker.setIcon({url: s, scaledSize: new google.maps.Size(40, 40) }); })};
 
     marker.id = id;
     marker.userMessage = message ? message : "";
@@ -306,7 +326,7 @@ function Unapprove(id) {
         var marker = markers.find(marker => marker.id === id);
         marker.approved = false;
         // marker.content = pinUnapproved;
-        marker.setIcon({url: "https://maps.google.com/mapfiles/kml/shapes/info_circle.png", scaledSize: new google.maps.Size(40, 40) });
+        marker.setIcon({url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) });
         updateInfoBoxInfo(marker);
     })
     .catch(error => {
@@ -326,10 +346,11 @@ function generateContentString(marker) {
         marker.liked = marker.liked ? marker.liked : false;
 
         split = marker.userMessage.split(" ");
+
         for (const s of split) {
             contentString += ((s.substring(0, 4) === "http") ? //Is this a web url?
             ( s.includes("youtube.com") ? //Is this a youtube video? (Note: images with the word youtube.com in it will fail)
-            "<iframe width='400' height='300' src='" + s.replace("watch?v=", "embed/") + "' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe><br>" //Add the video using an iframe
+            "<iframe width='400' height='300' src='" + s.replace("watch?v=", "embed/").replace("shorts/", "embed/") + "' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe><br>" //Add the video using an iframe
             : "<img src='" + s + "' alt='Image'><br>" //Just a regular image/gif
             )
             : s + " "); //Not a webpage
