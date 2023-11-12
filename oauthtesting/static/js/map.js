@@ -79,10 +79,13 @@ function initMap() {
 
     /*render a UVA logo marker for each point of interest in the database. POIs is passed from the template.*/
     pois.forEach(function(poi) {
+        if (poi.owner === null) poi.owner = "nobody";
         console.log(poi.name)
+        console.log(poi.owner)
         console.log(poi.points)
         console.log(poi.pid)
         console.log(poi.latitude)
+        poi.img =  'https://upload.wikimedia.org/wikipedia/commons/thumb/archive/d/dd/20170128002300%21University_of_Virginia_Rotunda_logo.svg/118px-University_of_Virginia_Rotunda_logo.svg.png';
 
         var marker = new google.maps.Marker({
             position: { lat: parseFloat(poi.latitude), lng: parseFloat(poi.longitude) },
@@ -98,8 +101,10 @@ function initMap() {
         var markerWindow = new google.maps.InfoWindow({
             maxWidth: 200,
             content: '<img style = "width: 95%; display: flex; margin: auto;" src= "' + poi.img + '"></img>'
-                    +'<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: green; font-size: 1 em;">' + 'points: ' + poi.points + '</div>'
-                    +'<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + 'last message: ' + poi.time + '</div>'
+                    +'<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: green; font-size: 1 em;">' + 'points/sec: ' + poi.points + '</div>'
+                    // +'<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + 'last message: ' + poi.time + '</div>'
+                    + '<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + 'current owner: ' + poi.owner + '</div>'
+                    + '<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + '<form action="/claim/' + poi.pid + '/" ><input type="submit" class="saveButton" value="Claim!"/></form>' + '</div>'
         });
     
         marker.addListener('click', function () {

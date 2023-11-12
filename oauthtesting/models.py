@@ -13,7 +13,7 @@ COORDINATE_DECIMAL_PLACES = 6  # How many digits after the decimal place should 
 IMAGE_FILE_LOCATION = 'images'
 DRAWING_FILE_LOCATION = 'drawing'
 
-DEFAULT_POINTS = 200  # How many points should a point of interest (POI) give?
+DEFAULT_POINTS = 1  # How many points should a point of interest (POI) give?
 
 # https://stackoverflow.com/questions/51570254/django-change-name-of-image-from-imagefield
 # Referenced to figure out how to access the username (line 26 and method account_url)
@@ -53,9 +53,11 @@ class Friends(models.Model):
 # Point of Interest
 class POI(models.Model):
     name = models.CharField(max_length=100, default="A Point of Interest")
-    pid = models.IntegerField(primary_key=True)
+    pid = models.AutoField(primary_key=True)
     img = models.ImageField(upload_to='images/', default='images/rotunda.jpeg')
     time = models.DateTimeField()
+    lastupdated = models.DateTimeField(default=None, blank=True, null=True)
+    owner = models.CharField(max_length=USERNAME_LENGTH, default=None, blank=True, null=True)
     points = models.IntegerField(default=DEFAULT_POINTS)
     longitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                     decimal_places=COORDINATE_DECIMAL_PLACES)
