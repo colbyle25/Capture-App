@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block html %}
+
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/pointshop_style.css' %}">
+<link rel="stylesheet" href="{% static 'oauthtesting/item_styles.css' %}">
+
+<title>Point Shop</title>
+
+<div class="pointshop">
+
+    <h1 class = "season"> Season 1: The Beginning </h1>
+    <h3 class = "mappys-market">Mappy's Market:</h3>
+    <div class = "info-parent">
+        <img src = "/media/images/mappy.png" class = 'mappy-logo'>'</img>
+        <div class = "info-container">
+            <p class = "info-message"> "O Traveler, trade me points and I'll make your Profile fresh. </p>
+            <p class = "info-message"> Maximum satisfaction or your money back guaranteed! Not really..." </p>
+        </div>
+    </div>
+
+    <div class = "points-table-div {% if border %} {{ border }} {% else %} border-none {% endif %}">
+        <table class="points-table">
+            <tbody>
+                <tr class = "point-info-th-text">
+                    <th scope="row">PLAYER</th>
+                </tr>
+                <tr class = "point-info-text">
+                    {% if account %}
+                    <td>{{ account.username }}</td>
+                    {% endif %}
+                    {% if not account %}
+                    <td>
+                        <a href = "{% url 'login' %}">Log in To Purchase Items</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                <tr class = "point-info-th-text">
+                    <th scope="row">POINTS</th>
+                </tr>
+                <tr class = "point-info-text">
+                    {% if account %}
+                    <td>{{ account.points }}</td>
+                    {% endif %}
+                    {% if not account %}
+                    <td>
+                        <a href = "{% url 'login' %}">Log in To Purchase Items</a>
+                    </td>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        const CSRF_TOKEN = '{{ csrf_token }}';
+    </script>  
+
+    {% for category, items in categorized_items.items %}
+    <h3 class = "category-h3">{{ category|title}}s</h3>
+    <div class="items-container">
+        {% for item in items %}
+            <div class="item">
+                <div class="preview {{ item.css }}"></div>
+                <div class="item-name">{{ item.name }}</div>
+                <div class="item-description">{{ item.description }}</div>
+                <div class="item-cost"> Cost: {{item.cost}} points</div>
+                {% if item.id in purchased_item_ids %}
+                    <button class="purchase-button" disabled>Item Owned</button>
+                {% else %}
+                    {% if account.points >= item.cost %}
+                        <button class="btn btn-success purchase-button" data-item-id="{{ item.id }}">Purchase</button>
+                    {% else %}
+                        <button class="btn btn-danger purchase-button" disabled>Not Enough Points</button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+<script src = "{% static 'js/pointshop.js' %}"></script>
+
+{% endblock %}

@@ -3,6 +3,7 @@
 
 {% load static %}
 <link rel="stylesheet" href="{% static 'oauthtesting/index_style.css' %}">
+<link rel="stylesheet" href="{% static 'oauthtesting/item_styles.css' %}">
 
 {% load socialaccount %}
 {% providers_media_js %}
@@ -19,9 +20,8 @@
         <p class="welcome-text">Your email is {{ user.email }} and you are{% if not user.is_superuser %} not{% endif %} an admin. </p>
     </div>
 
-    <br />
-
-    <div class = "account-table-div">
+    <br/>
+    <div class = "account-table-div {% if border %} {{ border }} {% else %} border-none {% endif %}">
         <h3 class="account-table-title">Account Information 
             <span>
                 <!-- https://www.w3docs.com/snippets/html/how-to-create-an-html-button-that-acts-like-a-link.html
@@ -37,6 +37,18 @@
 
         <table class="account-table">
             <tbody>
+                {% if account %}
+                {% if account.picture %}
+                <tr class = "account-info-th-text">
+                    <th scope="row">PROFILE PICTURE</th>
+                </tr>
+                <tr class = "account-info-text">
+                    <td>
+                        <img src="{{ account.picture.url}}" alt="profile picture" class="profile-picture">
+                    </td>
+                </tr>
+                {% endif %}
+                {% endif %}
                 <tr class = "account-info-th-text">
                     <th scope="row">USERNAME</th>
                 </tr>
@@ -65,31 +77,14 @@
                 </tr>
             </tbody>
         </table>
-        {% if account %}
-        {% if account.picture %}
-            <img src="{{ account.picture.url}}" alt="profile picture">
-        {% endif %}
-        {% endif %}
     </div>
 
 
     <div class="welcome-div">
         <a href="{% url 'logout' %}">
-            <button class=" logout-button">Logout</button>
+            <button class="btn btn-light btn-outline-danger logout-button">Logout</button>
         </a>
     </div>
-
-
-    <footer class = 'footer footer-styling'>
-      <div class = "text-center">
-          <p>
-              Copyright 2023
-          </p>
-          <p>
-              This is the ouathtesting for the capture app.
-          </p>
-      </div>
-    </footer>
 
   </body>
 </html>
