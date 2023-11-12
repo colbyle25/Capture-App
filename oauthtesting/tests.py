@@ -9,10 +9,10 @@ import datetime as dt
 
 class ExampleTestCase(TestCase):
     def setUp(self):
-        user1 = Account.objects.create(username="test", points=0, bio="Hi, I'm a dummy account", picture=None)
-        user2 = Account.objects.create(username="test2", points=0, bio="I like bread", picture=None)
-        user3 = Account.objects.create(username="test3", points=121121224534, bio="", picture=None)
-        user4 = Account.objects.create(username="test4", points=0, bio="Who needs friends?", picture=None)
+        user1 = Account.objects.create(username="test", points=0, bio="Hi, I'm a dummy account", picture="")
+        user2 = Account.objects.create(username="test2", points=0, bio="I like bread", picture="")
+        user3 = Account.objects.create(username="test3", points=121121224534, bio="", picture="")
+        user4 = Account.objects.create(username="test4", points=0, bio="Who needs friends?", picture="")
 
         Friends.objects.create(user1=user1, user2=user2)
         Friends.objects.create(user1=user3, user2=user1)
@@ -63,3 +63,21 @@ class ExampleTestCase(TestCase):
         self.assertEqual(text.message, "This is another message")
         self.assertEqual(text2.message, "This is another another message")
 
+    def test_html_text(self):
+        t = timezone.now()
+        user2 = Account.objects.get(username="test2")
+        text = TextMessage.objects.create(username=user2, time=t, longitude=0, latitude=0, message="<h1>BIG WORDS</h1>")
+        self.assertTrue(text.has_html())
+        self.assertTrue(not text.has_script())
+
+    def test_no_html_text(self):
+        t = timezone.now()
+        user2 = Account.objects.get(username="test2")
+        text = TextMessage.objects.create(username=user2, time=t, longitude=0, latitude=0, message="regular message, no html <3")
+        self.assertTrue(not text.has_html())
+
+    def test_embed_script(self):
+        t = timezone.now()
+        user2 = Account.objects.get(username="test2")
+        text = TextMessage.objects.create(username=user2, time=t, longitude=0, latitude=0, message="<script>alert('evil script hehe');</script>")
+        self.assertTrue(text.has_script())

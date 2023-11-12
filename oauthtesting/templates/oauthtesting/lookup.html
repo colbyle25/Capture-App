@@ -18,7 +18,7 @@
                 </tr>
                 <tr class = "account-info-text">
                     <td>
-                        <img src="{{ account.picture.url}}" alt="profile picture" class="profile-picture">
+                        <img src="{{ account.picture}}" alt="profile picture" class="profile-picture">
                     </td>
                 </tr>
                 {% endif %}
@@ -103,7 +103,7 @@
         {% endif %}
     {% else %}
     <h3 class="error-message">Oops! We didn't find any account with that name.</h3>
-    <img class="error-img" src="/media/images/mappy_error.png"></img>
+    <img class="error-img" src="/static/images/mappy_error.png"></img>
     {% endif %}
 </div>
 

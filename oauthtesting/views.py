@@ -17,11 +17,13 @@ from collections import defaultdict
 
 from .forms import AccountForm
 from .models import Account, TextMessage, POI, Item, Purchase, Account_Profile, Like
+from .poihandling import *
 
 
 # Create your views here.
-
+@transaction.atomic
 def home(request):
+    upd_all()
     if request.method == 'SEARCH':
         print("Search!")
     if request.user.is_authenticated:
@@ -49,7 +51,11 @@ def user_logout(request):
     return HttpResponseRedirect("/")
 
 
+
+
 def profile_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
     if request.method == 'POST':
         form = AccountForm(request.POST, request.FILES)
         if form.is_valid():
@@ -114,7 +120,9 @@ def apply_profile_settings(request):
     return JsonResponse({'success': True})
 
 
+@transaction.atomic
 def map(request):
+    upd_all()
     api_key = settings.GOOGLE_MAPS_API_KEY
     pois = POI.objects.all()
 
@@ -130,6 +138,7 @@ def map(request):
             'latitude': float(poi.latitude),
             'longitude': float(poi.longitude),
             'name': poi.name,
+            'owner': poi.owner
         }
         pois_list.append(poi_data)
 
@@ -162,7 +171,9 @@ def lookup(request):
     return render(request, 'oauthtesting/lookup.html', context)
 
 
+@transaction.atomic
 def leaderboard(request):
+    upd_all()
     accounts = Account.objects.all().order_by('-points')
     placement = -1
     account = None
@@ -177,7 +188,9 @@ def leaderboard(request):
     return render(request, 'oauthtesting/leaderboard.html', context)
 
 
+@transaction.atomic
 def pointshop(request):
+    upd_all()
     items = Item.objects.all()
     user = Account.objects.filter(username=request.user).first()
     purchased_item_ids = Purchase.objects.filter(user=user).values_list('item_id', flat=True)
@@ -195,6 +208,7 @@ def pointshop(request):
 @require_http_methods(["POST"])
 @transaction.atomic
 def purchase_item(request, item_id):
+    upd_all()
     item = Item.objects.get(id=item_id)
     user = Account.objects.filter(username=request.user).first()
     if user.points >= item.cost:
@@ -340,3 +354,12 @@ def parse_message_content(message):
             parsed_content.append({'type': 'text', 'text': word})
 
     return parsed_content
+
+@login_required
+@transaction.atomic
+def claim_poi(request, pid):
+    upd_all()
+    poi = get_object_or_404(POI, pid=pid)
+    poi.owner=Account.objects.filter(username=request.user).first().username
+    poi.save()
+    return HttpResponseRedirect("/map")
