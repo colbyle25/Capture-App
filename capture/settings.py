@@ -86,10 +86,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'oauthtesting.context_processors.add_background_to_context'
             ],
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'capture.wsgi.application'
 
@@ -173,7 +176,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SITE_ID = 2
+SITE_ID = 3
 
 SOCIALACCOUNT_PROVIDERS = {
     'google' : {

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block html %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'oauthtesting/profile_settings_style.css' %}">
+<link rel="stylesheet" href="{% static 'oauthtesting/item_styles.css' %}">
+
+{% load oauthtesting_extras %}
+
+<body>
+
+    <script type="text/javascript">
+        const CSRF_TOKEN = '{{ csrf_token }}';
+    </script>
+
+    <div class="profile-settings">
+        <h2 class = "profile-settings-title" style="text-align:center"> Edit Profile </h2>
+        {% for category, items in categorized_items.items %}
+        <h3 class = "category-title">{{ category|title }}s</h3>
+        <div class="items-container">
+            {% get selected_items category as item_selected %}
+            <div class="item {% if item_selected.0 == None %}selected{% endif %}">
+                <div class="preview" style="background-color: gainsboro;"></div>
+                <div class="item-name">{{ None }}</div>
+                <button class="btn btn-outline-primary select-button {% if item_selected.0 == None %}selected{% endif %}"
+                        {% if item_selected.0 == None %}disabled{% endif %} data-category="{{ category }}"
+                        data-item-id="None">Select</button>
+            </div>
+            {% for item in items %}
+            <div class="item {% if item_selected and item_selected.0.id == item.id %}selected{% endif %}">
+                <div class="preview {{ item.css }}"></div>
+                <div class="item-name">{{ item.name }}</div>
+                <button class="btn btn-outline-primary select-button {% if item_selected and item_selected.0.id == item.id %}selected{% endif %}"
+                        {% if item_selected and item_selected.0.id == item.id %}disabled{% endif %}
+                        data-category="{{ category }}" data-item-id="{{item.id}}">Select</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        <button class="apply-button" id="apply-button">Apply</button>
+    </div>
+
+</body>
+
+<script src="{% static 'js/profile_settings.js' %}"></script>
+
+{% endblock %}
