@@ -10,7 +10,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
 from .forms import AccountForm
-from .models import Account, TextMessage, POI, Like
+from .models import Account, TextMessage, POI, Like, Message
 
 
 # Create your views here.
@@ -93,15 +93,24 @@ def map(request):
 
 
 def lookup(request):
+    context = {'account': None, 'latest_message': None}
+
     if request.method == 'GET':
-        info = request.GET.get('lookup')
-        print("user: " + info)
-        account = Account.objects.filter(username=info)
-        if account.exists():
-            account = account.first()
-        else:
-            account = None
-        return render(request, 'oauthtesting/lookup.html', {'account': account})
+        username_query = request.GET.get('lookup')
+        print("user: " + username_query)
+
+        try:
+            account = Account.objects.get(username=username_query)
+            context['account'] = account
+
+            # Fetch the most recent TextMessage for this account
+            latest_message = TextMessage.objects.filter(username=account).order_by('-time').first()
+            context['latest_message'] = latest_message
+
+        except Account.DoesNotExist:
+            print("Account not found")
+
+    return render(request, 'oauthtesting/lookup.html', context)
 
 
 def leaderboard(request):

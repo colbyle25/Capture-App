@@ -35,9 +35,22 @@
             {% if account.picture %}
                 <img src="{{ account.picture.url}}" alt="profile picture">
             {% endif %}
+            {% if latest_message %}
+    <div class="message-info">
+        <h3>Latest Message</h3>
+        <p><strong>Message:</strong> {{ latest_message.message }}</p>
+        <p><strong>Time:</strong> {{ latest_message.time }}</p>
+        <p><strong>Location:</strong> ({{ latest_message.longitude }}, {{ latest_message.latitude }})</p>
+        <p><strong>Approved:</strong> {{ latest_message.approved }}</p>
+    </div>
+{% else %}
+    <p>No messages found for this user.</p>
+{% endif %}
         {% endif %}
     {% else %}
     <h3>No account found</h3>
+
+
     {% endif %}
 </div>
 
