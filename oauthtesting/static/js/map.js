@@ -166,6 +166,7 @@ function placeNewMarker(location) {
         currentMarker.setPosition(location);
         console.log("Marker moved", currentMarker);
         return;
+
     }
     else{
         currentMarker = new google.maps.Marker({
@@ -189,6 +190,7 @@ function placeNewMarker(location) {
 // Method for placing database markers.
 function placeMarker(location, message, id, likes, liked, approved) {
     console.log("Placing from db", id);
+
     var marker = new google.maps.Marker({
         position: location,
         map: map,

@@ -51,6 +51,50 @@
                 </tr>
             </tbody>
         </table>
+        {% if account %}
+            {% if account.picture %}
+                <img src="{{ account.picture.url}}" alt="profile picture">
+            {% endif %}
+            {% endif %}
+
+            {% if latest_message %}
+                <table class="account-table">
+                    <tbody>
+                        <tr class="account-info-th-text">
+                            <th scope="row">LATEST MESSAGE</th>
+                        </tr>
+                        <tr class="account-info-text">
+                            <td>
+                                {% if latest_message.message|urlize != latest_message.message %}
+                                    <iframe src="{{ latest_message.message }}" style="width: 400px; height: 300px;"></iframe>
+                                {% else %}
+                                    {{ latest_message.message|urlize }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="account-info-th-text">
+                            <th scope="row">TIME</th>
+                        </tr>
+                        <tr class="account-info-text">
+                            <td>{{ latest_message.time }}</td>
+                        </tr>
+                        <tr class="account-info-th-text">
+                            <th scope="row">LOCATION</th>
+                        </tr>
+                        <tr class="account-info-text">
+                            <td>({{ latest_message.longitude }}, {{ latest_message.latitude }})</td>
+                        </tr>
+                        <tr class="account-info-th-text">
+                            <th scope="row">APPROVED</th>
+                        </tr>
+                        <tr class="account-info-text">
+                            <td>{{ latest_message.approved }}</td>
+                        </tr>
+                    </tbody>
+            </table>
+        {% else %}
+            <p>No messages found for this user.</p>
+        {% endif %}
     {% else %}
     <h3 class="error-message">Oops! We didn't find any account with that name.</h3>
     <img class="error-img" src="/media/images/mappy_error.png"></img>

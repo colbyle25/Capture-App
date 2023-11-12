@@ -8,7 +8,7 @@ admin.site.register(Item)
 admin.site.register(Purchase)
 
 @admin.action(description='Approve selected messages')
-def approve_messages(queryset):
+def approve_messages(modeladmin, request, queryset):
     queryset.update(approved=True)
 
 
