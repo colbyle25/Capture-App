@@ -289,3 +289,12 @@ def unlike_marker(request, id):
 @login_required
 def amiadmin(request):
     return JsonResponse({'admin': request.user.is_superuser})
+
+def admin_approval(request):
+    text_message_list = TextMessage.objects.all().order_by('-time')
+    if request.user.is_superuser:
+        return render(request, 'oauthtesting/admin_approval.html', {'text_message_list': text_message_list})
+    else:
+        return HttpResponseRedirect("/")
+
+    return render(request, 'oauthtesting/admin_approval.html')

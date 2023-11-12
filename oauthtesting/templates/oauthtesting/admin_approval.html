@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block html %}
+<h1>Admin Approval</h1>
+<br/><br>
+    {% for message in text_message_list %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endblock %}
+```
