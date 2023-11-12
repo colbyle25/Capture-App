@@ -426,6 +426,7 @@ function SaveMessage(protoid) {
                     currentInfoWindow.setContent(generateContentString(marker, marker.getPosition()));
                 }
             } else {
+                alert("Out of message tickets!");
                 console.error('Failed to save marker:', data);
             }
         })

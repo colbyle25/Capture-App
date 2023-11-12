@@ -18,6 +18,7 @@ from collections import defaultdict
 from .forms import AccountForm
 from .models import Account, TextMessage, POI, Item, Purchase, Account_Profile, Like
 from .poihandling import *
+from .tickethandling import *
 
 
 # Create your views here.
@@ -230,9 +231,12 @@ def purchase_item(request, item_id):
 
 
 @require_http_methods(["POST"])
+@transaction.atomic
 def save_marker(request):
     data = json.loads(request.body)
     username = Account.objects.filter(username=request.user).first()
+    if not eat_ticket(username):
+        return JsonResponse({'status': 'not enough tickets!'})
     message = data['message']
     latitude = data['latitude']
     longitude = data['longitude']
