@@ -150,7 +150,7 @@ function getMarkerIcon(marker_id) {
         return "https://maps.google.com/mapfiles/ms/icons/orange-dot.png";
         break;
     case 2:
-        return "https://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+        return "https://maps.google.com/mapfiles/kml/shapes/arrow-reverse.png";
         break;
     case 3:
         return "https://maps.google.com/mapfiles/kml/shapes/movies.png";
@@ -197,7 +197,14 @@ function placeMarker(location, message, id, likes, liked, approved) {
     })
     if (!approved) marker.setIcon({url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) });
     else if (message.includes("youtube.com")) marker.setIcon({url: getMarkerIcon(3), scaledSize: new google.maps.Size(40, 40) });
-    else if (message.includes("http")) { message.split(" ").forEach(s => { if (s.substring(0, 4) === "http") marker.setIcon({url: s, scaledSize: new google.maps.Size(40, 40) }); })};
+    else if (message.includes("http")) {
+        message.split(" ").forEach(s => { if (s.substring(0, 4) === "http") marker.setIcon({url: s, scaledSize: new google.maps.Size(40, 40) }); })
+        if (marker.icon) { //If the image failed, use the website icon instead
+            var image = new Image();
+            image.onerror = function () { marker.setIcon({url: getMarkerIcon(2), scaledSize: new google.maps.Size(40, 40) }) };
+            image.src = marker.icon.url;
+        }
+    };
 
     marker.id = id;
     marker.userMessage = message ? message : "";
@@ -351,7 +358,7 @@ function generateContentString(marker) {
             contentString += ((s.substring(0, 4) === "http") ? //Is this a web url?
             ( s.includes("youtube.com") ? //Is this a youtube video? (Note: images with the word youtube.com in it will fail)
             "<iframe width='400' height='300' src='" + s.replace("watch?v=", "embed/").replace("shorts/", "embed/") + "' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe><br>" //Add the video using an iframe
-            : "<img src='" + s + "' alt='Image'><br>" //Just a regular image/gif
+            : "<embed width='400' height='300' src=\"" + s + "\"'><br>" //"<img src='" + s + "' alt='<embed src=\"" + s + "\">'><br>" //Just a regular image/gif
             )
             : s + " "); //Not a webpage
         }
