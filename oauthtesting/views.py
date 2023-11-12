@@ -293,6 +293,12 @@ def amiadmin(request):
 def admin_approval(request):
     text_message_list = TextMessage.objects.all().order_by('-time')
     if request.user.is_superuser:
+        if request.method == 'POST':
+            message_ids = request.POST.getlist('message_ids')
+            for id in message_ids:
+                message = TextMessage.objects.get(id=id)
+                message.approved = request.POST.get(f'approved_{id}', 'false') == 'true'
+                message.save()
         return render(request, 'oauthtesting/admin_approval.html', {'text_message_list': text_message_list})
     else:
         return HttpResponseRedirect("/")

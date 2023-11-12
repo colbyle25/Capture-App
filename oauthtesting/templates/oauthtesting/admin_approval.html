@@ -1,9 +1,37 @@
 {% extends "base.html" %}
+
 {% block html %}
 <h1>Admin Approval</h1>
 <br/><br>
-    {% for message in text_message_list %}
-        <p>{{ message }}</p>
-    {% endfor %}
+
+<form action="{% url 'admin_approval' %}" method="post">
+    {% csrf_token %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Message</th>
+                <th scope="col">Approve</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in text_message_list %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ message }}</td>
+                    <td>
+                        <input type="hidden" name="message_ids" value="{{ message.id }}">
+                        <input type="checkbox" name="approved_{{ message.id }}" value="true" {% if message.approved %} checked {% endif %}>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No messages available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Update Approvals</button>
+</form>
+
 {% endblock %}
-```
