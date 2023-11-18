@@ -125,7 +125,7 @@ else:
 MEDIA_URL = '/media/'
 
 # Path where media is stored'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'oauthtesting/static'
 
 
 # Password validation
@@ -176,7 +176,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SITE_ID = 3
+SITE_ID = 2
 
 SOCIALACCOUNT_PROVIDERS = {
     'google' : {

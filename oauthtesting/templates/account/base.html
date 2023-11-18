@@ -34,7 +34,7 @@
         </div>
         {% endif %}
 
-        <div class="login-btn-div md-3">
+        <div class="login-btn-div">
             <strong>{% trans "" %}</strong>
                 <button class = "btn btn-primary login-button" onclick="window.location.href='{% provider_login_url 'google' %}'">{% trans "Sign In via Google" %}</button>
                 <button class = "btn btn-primary login-button" onclick="window.location.href='{% url 'account_login' %}'">{% trans "Sign In via Capture" %}</button>
