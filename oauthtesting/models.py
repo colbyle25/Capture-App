@@ -86,6 +86,8 @@ class Message(models.Model):
     latitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                    decimal_places=COORDINATE_DECIMAL_PLACES)
     approved = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
+    rejection_reason = models.CharField(max_length=TEXT_LENGTH, default='')
 
 
     def __str__(self):

@@ -268,6 +268,8 @@ def approve_marker(request, id):
     if not request.user.is_superuser:
         return HttpResponse(status=403)
     marker = get_object_or_404(TextMessage, pk=id)
+    if marker.rejected:
+        return JsonResponse({'status': 'failure', 'message': 'Marker already rejected!'})
     marker.approved = True
     marker.save()
     return JsonResponse({'status': 'success', 'message': 'Marker approved'})
@@ -287,7 +289,7 @@ def unapprove_marker(request, id):
 def load_markers(request):
     markers = TextMessage.objects.filter(
         approved=True) if not request.user.is_superuser else TextMessage.objects.filter()
-    markers_data = list(markers.values('id', 'latitude', 'longitude', 'message', 'approved'))
+    markers_data = list(markers.values('id', 'latitude', 'longitude', 'message', 'approved', 'rejected', 'rejection_reason'))
     for x in markers_data:
         mk = TextMessage.objects.get(id=x['id'])
         i = x['id']
@@ -331,7 +333,7 @@ def admin_approval(request):
         return HttpResponseRedirect("/")
 
     sort_by = request.GET.get('sort', '-time')  # Default sort is by time in descending order
-    if sort_by not in ['username', 'time', 'message', 'approved', '-time', '-username', '-message', '-approved']:
+    if sort_by not in ['username', 'time', 'message', 'approved', 'rejected', '-time', '-username', '-message', '-approved', '-rejected']:
         sort_by = '-time'
 
     text_message_list = TextMessage.objects.all().order_by(sort_by)
@@ -341,6 +343,12 @@ def admin_approval(request):
         for id in message_ids:
             message = TextMessage.objects.get(id=id)
             message.approved = request.POST.get(f'approved_{id}', 'false') == 'true'
+            if request.POST.get(f'rejected_{id}', 'false') == 'true':
+                message.approved = False
+                message.rejected = True
+                message.rejection_reason = request.POST.get(f'rejection_reason_{id}', '')
+            else:
+                message.rejected = False
             message.save()
 
         messages.success(request, 'Successfully updated messages')
@@ -374,3 +382,25 @@ def claim_poi(request, pid):
     poi.owner=Account.objects.filter(username=request.user).first().username
     poi.save()
     return HttpResponseRedirect("/map")
+
+@login_required
+def reject_marker(request, pid):
+    if not request.user.is_superuser:
+        return HttpResponse(status=403)
+    data = json.loads(request.body)
+    marker = get_object_or_404(Message, pid=pid)
+    marker.approved = False
+    marker.rejected = True
+    marker.rejection_reason = data['reason']
+    marker.save()
+    return JsonResponse({'success' : True, 'message': 'Successfully rejected'})
+
+@login_required
+def unreject_marker(request, pid):
+    if not request.user.is_superuser:
+        return HttpResponse(status=403)
+    marker = get_object_or_404(Message, pid=pid)
+    marker.rejected = False
+    marker.rejection_reason = ""
+    marker.save()
+    return JsonResponse({'success' : True, 'message': 'Successfully un-rejected'})
