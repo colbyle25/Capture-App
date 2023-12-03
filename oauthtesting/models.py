@@ -31,9 +31,9 @@ class Account(models.Model):
 
     # Optional
 
-    bio = models.CharField(max_length=BIOGRAPHY_LENGTH, default="A user")
+    bio = models.CharField(max_length=BIOGRAPHY_LENGTH, default="A user", blank=True)
     #picture = models.ImageField(upload_to=account_url)
-    picture = models.CharField(max_length=256)
+    picture = models.CharField(max_length=256, blank=True)
 
     def __str__(self):
         return self.username
