@@ -7,7 +7,6 @@ var admView = false;
 var preid = 0;
 
 
-
 function initMap() {
     fetch("/amiadmin/").then(response => response.json()).then(data => {admView = data.admin;});
     console.log("initializing");
@@ -20,7 +19,7 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('UVA_MAP'), {
         center: {lat: 38.03358840942383, lng: -78.50801849365234}, //default center is central grounds
         zoom: 16,
-        styles: [    
+        styles: [
             {
                 featureType: "poi",
                 elementType: "labels",
@@ -40,7 +39,9 @@ function initMap() {
         },
         zIndex: 1000 //make sure it renders above a POI marker in the same place
     });
-    
+
+    var alreadySetMapLocation = false;
+
     /*update the location: readjust the location/avatar marker and re-center the map*/
     function updateLocation(position) {
         var location = {
@@ -49,7 +50,10 @@ function initMap() {
         };
 
         locationMarker.setPosition(location);
-        map.setCenter(location);
+        if (!alreadySetMapLocation) { //Dont keep moving map, beta testers dont like that
+            map.setCenter(location);
+            alreadySetMapLocation = true;
+        }
     }
 
     /*watchPosition should continually call an updatePosition as the user moves around*/
@@ -57,12 +61,12 @@ function initMap() {
         navigator.geolocation.getCurrentPosition(
             function (position) { //set the initial position before watching for changes
                 updateLocation(position);
-                var watchId = navigator.geolocation.watchPosition(updateLocation, 
+                var watchId = navigator.geolocation.watchPosition(updateLocation,
                     function (error) {
                         console.error('Error getting user location:', error);
                     }
                 );
-            }, 
+            },
             function (error) {
                 console.error('Error getting user location:', error);
             },
@@ -97,7 +101,7 @@ function initMap() {
                 scaledSize: new google.maps.Size(50, 50)
             }
         });
-    
+
         var markerWindow = new google.maps.InfoWindow({
             maxWidth: 200,
             content: '<img style = "width: 95%; display: flex; margin: auto;" src= "' + poi.img + '"></img>'
@@ -106,7 +110,7 @@ function initMap() {
                     + '<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + 'current owner: ' + poi.owner + '</div>'
                     + '<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + '<form action="/claim/' + poi.pid + '/" ><input type="submit" class="saveButton" value="Claim!"/></form>' + '</div>'
         });
-    
+
         marker.addListener('click', function () {
             markerWindow.open(map, marker);
         });
@@ -365,7 +369,7 @@ function generateContentString(marker) {
             contentString += ((s.substring(0, 4) === "http") ? //Is this a web url?
             ( s.includes("youtube.com") ? //Is this a youtube video? (Note: images with the word youtube.com in it will fail)
             "<iframe width='400' height='300' src='" + s.replace("watch?v=", "embed/").replace("shorts/", "embed/") + "' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe><br>" //Add the video using an iframe
-            : "<embed width='400' height='300' src=\"" + s + "\"'><br>" //"<img src='" + s + "' alt='<embed src=\"" + s + "\">'><br>" //Just a regular image/gif
+            : "<iframe width='400' height='300' src=\"" + s + "\"'></iframe><br>" //"<img src='" + s + "' alt='<embed src=\"" + s + "\">'><br>" //Just a regular image/gif
             )
             : s + " "); //Not a webpage
         }
