@@ -121,6 +121,19 @@ function initMap() {
 
     // Loads the markers whenever the map is loaded
     LoadMarkers();
+
+
+
+    const legend = document.getElementById("legend");
+
+    for (let i = 0; i < 6; i++) {
+        if (i == 1) continue;
+        const div = document.createElement("div");
+        div.innerHTML = '<img width = 30 height = 30 src="' + getMarkerIcon(i) + '"> ' + getMarkerNames(i);
+        legend.appendChild(div);
+    }
+
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 }
 
 function handleWindowOpening(marker, location) {
@@ -150,6 +163,27 @@ function handleWindowOpening(marker, location) {
     });
 }
 
+function getMarkerNames(marker_id) {
+    switch (marker_id) {
+    case 0:
+        return "Unapproved Message";
+        break;
+    case 1:
+        return "";
+        break;
+    case 2:
+        return "Website";
+        break;
+    case 3:
+        return "Video Message";
+        break;
+    case 4:
+        return "Text Message";
+        break;
+    }
+    return "Capture Point";
+}
+
 function getMarkerIcon(marker_id) {
     switch (marker_id) {
     case 0:
@@ -164,8 +198,11 @@ function getMarkerIcon(marker_id) {
     case 3:
         return "https://maps.google.com/mapfiles/kml/shapes/movies.png";
         break;
+    case 4:
+        return "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+        break;
     }
-    return "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/archive/d/dd/20170128002300%21University_of_Virginia_Rotunda_logo.svg/118px-University_of_Virginia_Rotunda_logo.svg.png";
 }
 
 function placeNewMarker(location) {
@@ -356,8 +393,11 @@ function generateContentString(marker) {
     var contentString = '<div class="infoWindowContent">';
 
     if (marker.userMessage === "") { // If there's no saved message, show textarea
-        contentString += 'Write a Message! ' + '<br>';
-        contentString += '<textarea id="userMessage_' + marker.protoid + '" class="userMessageTextarea"></textarea><br>';
+
+
+
+        contentString += 'Write a Message! <br>(Requires Message Ticket) ' + '<br><br>';
+        contentString += '<textarea id="userMessage_' + marker.protoid + '" placeholder="Enter text/image url/youtube url" class="userMessageTextarea"></textarea><br>';
         contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.protoid + ');" value="Submit for Approval">';
     } else {
         marker.likes = marker.likes ? marker.likes : 0;
