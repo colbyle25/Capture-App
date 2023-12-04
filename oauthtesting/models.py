@@ -31,9 +31,9 @@ class Account(models.Model):
 
     # Optional
 
-    bio = models.CharField(max_length=BIOGRAPHY_LENGTH, default="A user")
+    bio = models.CharField(max_length=BIOGRAPHY_LENGTH, default="A user", blank=True)
     #picture = models.ImageField(upload_to=account_url)
-    picture = models.CharField(max_length=256)
+    picture = models.CharField(max_length=256, blank=True)
 
     def __str__(self):
         return self.username
@@ -86,6 +86,8 @@ class Message(models.Model):
     latitude = models.DecimalField(max_digits=COORDINATE_DECIMAL_PLACES + 2,
                                    decimal_places=COORDINATE_DECIMAL_PLACES)
     approved = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
+    rejection_reason = models.CharField(max_length=TEXT_LENGTH, default='')
 
 
     def __str__(self):

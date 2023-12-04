@@ -10,7 +10,7 @@
 
 <html>
   <head>
-    <title>OAuth testing</title>
+    <title>Capture Game</title>
   </head>
 
   <body>
@@ -63,12 +63,14 @@
                     <td>{{ user.email }}</td>
                 </tr>
                 {% endif %}
+                {% if account.bio %}
                 <tr class = "account-info-th-text">
                     <th scope="row">BIO</th>
                 </tr>
                 <tr class = "account-info-text">
                     <td>{{ account.bio }}</td>
                 </tr>
+                {% endif %}
                 <tr class = "account-info-th-text">
                     <th scope="row">POINTS</th>
                 </tr>

@@ -7,7 +7,6 @@ var admView = false;
 var preid = 0;
 
 
-
 function initMap() {
     fetch("/amiadmin/").then(response => response.json()).then(data => {admView = data.admin;});
     console.log("initializing");
@@ -20,7 +19,7 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('UVA_MAP'), {
         center: {lat: 38.03358840942383, lng: -78.50801849365234}, //default center is central grounds
         zoom: 16,
-        styles: [    
+        styles: [
             {
                 featureType: "poi",
                 elementType: "labels",
@@ -40,7 +39,9 @@ function initMap() {
         },
         zIndex: 1000 //make sure it renders above a POI marker in the same place
     });
-    
+
+    var alreadySetMapLocation = false;
+
     /*update the location: readjust the location/avatar marker and re-center the map*/
     function updateLocation(position) {
         var location = {
@@ -49,7 +50,10 @@ function initMap() {
         };
 
         locationMarker.setPosition(location);
-        map.setCenter(location);
+        if (!alreadySetMapLocation) { //Dont keep moving map, beta testers dont like that
+            map.setCenter(location);
+            alreadySetMapLocation = true;
+        }
     }
 
     /*watchPosition should continually call an updatePosition as the user moves around*/
@@ -57,12 +61,12 @@ function initMap() {
         navigator.geolocation.getCurrentPosition(
             function (position) { //set the initial position before watching for changes
                 updateLocation(position);
-                var watchId = navigator.geolocation.watchPosition(updateLocation, 
+                var watchId = navigator.geolocation.watchPosition(updateLocation,
                     function (error) {
                         console.error('Error getting user location:', error);
                     }
                 );
-            }, 
+            },
             function (error) {
                 console.error('Error getting user location:', error);
             },
@@ -97,7 +101,7 @@ function initMap() {
                 scaledSize: new google.maps.Size(50, 50)
             }
         });
-    
+
         var markerWindow = new google.maps.InfoWindow({
             maxWidth: 200,
             content: '<img style = "width: 95%; display: flex; margin: auto;" src= "' + poi.img + '"></img>'
@@ -106,7 +110,7 @@ function initMap() {
                     + '<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + 'current owner: ' + poi.owner + '</div>'
                     + '<div style = "padding-top: 10px; font-family: Lato; text-align: center; color: black; font-size: 1 em;">' + '<form action="/claim/' + poi.pid + '/" ><input type="submit" class="saveButton" value="Claim!"/></form>' + '</div>'
         });
-    
+
         marker.addListener('click', function () {
             markerWindow.open(map, marker);
         });
@@ -117,6 +121,19 @@ function initMap() {
 
     // Loads the markers whenever the map is loaded
     LoadMarkers();
+
+
+
+    const legend = document.getElementById("legend");
+
+    for (let i = 0; i < 6; i++) {
+        if (i == 1) continue;
+        const div = document.createElement("div");
+        div.innerHTML = '<img width = 30 height = 30 src="' + getMarkerIcon(i) + '"> ' + getMarkerNames(i);
+        legend.appendChild(div);
+    }
+
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 }
 
 function handleWindowOpening(marker, location) {
@@ -146,22 +163,43 @@ function handleWindowOpening(marker, location) {
     });
 }
 
+function getMarkerNames(marker_id) {
+    switch (marker_id) {
+    case 0:
+        return "Unapproved Message";
+        break;
+    case 1:
+        return "";
+        break;
+    case 2:
+        return "Website";
+        break;
+    case 3:
+        return "Video Message";
+        break;
+    case 4:
+        return "Text Message";
+        break;
+    }
+    return "Capture Point";
+}
+
 function getMarkerIcon(marker_id) {
     switch (marker_id) {
     case 0:
         return "https://maps.google.com/mapfiles/kml/shapes/info_circle.png";
-        break;
     case 1:
         return "https://maps.google.com/mapfiles/ms/icons/orange-dot.png";
-        break;
     case 2:
         return "https://maps.google.com/mapfiles/kml/shapes/arrow-reverse.png";
-        break;
     case 3:
         return "https://maps.google.com/mapfiles/kml/shapes/movies.png";
-        break;
+    case 4:
+        return "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+    case 6:
+        return "http://maps.google.com/mapfiles/kml/shapes/caution.png";
     }
-    return "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/archive/d/dd/20170128002300%21University_of_Virginia_Rotunda_logo.svg/118px-University_of_Virginia_Rotunda_logo.svg.png";
 }
 
 function placeNewMarker(location) {
@@ -184,6 +222,8 @@ function placeNewMarker(location) {
         currentMarker.protoid = preid++;
         currentMarker.userMessage = "";
         currentMarker.approved = false;
+        currentMarker.rejected = false;
+        currentMarker.rejection_reason = false;
     }
     var marker = currentMarker;
 
@@ -193,7 +233,7 @@ function placeNewMarker(location) {
 }
 
 // Method for placing database markers.
-function placeMarker(location, message, id, likes, liked, approved) {
+function placeMarker(location, message, id, likes, liked, approved, rejected, rejection_reason) {
     console.log("Placing from db", id);
 
     var marker = new google.maps.Marker({
@@ -202,7 +242,8 @@ function placeMarker(location, message, id, likes, liked, approved) {
         draggable: false,
         // content: approved ? pinApproved : pinUnapproved,
     })
-    if (!approved) marker.setIcon({url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) });
+    if (!approved && !rejected) marker.setIcon({url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) });
+    else if (rejected) marker.setIcon({url: getMarkerIcon(6), scaledSize: new google.maps.Size(40, 40)});
     else if (message.includes("youtube.com")) marker.setIcon({url: getMarkerIcon(3), scaledSize: new google.maps.Size(40, 40) });
     else if (message.includes("http")) {
         message.split(" ").forEach(s => { if (s.substring(0, 4) === "http") marker.setIcon({url: s, scaledSize: new google.maps.Size(40, 40) }); })
@@ -218,6 +259,8 @@ function placeMarker(location, message, id, likes, liked, approved) {
     marker.likes = likes;
     marker.liked = liked;
     marker.approved = approved;
+    marker.rejected = rejected;
+    marker.rejection_reason = rejection_reason;
 
     handleWindowOpening(marker, location);
 
@@ -352,8 +395,11 @@ function generateContentString(marker) {
     var contentString = '<div class="infoWindowContent">';
 
     if (marker.userMessage === "") { // If there's no saved message, show textarea
-        contentString += 'Write a Message! ' + '<br>';
-        contentString += '<textarea id="userMessage_' + marker.protoid + '" class="userMessageTextarea"></textarea><br>';
+
+
+
+        contentString += 'Write a Message! <br>(Requires Message Ticket) ' + '<br><br>';
+        contentString += '<textarea id="userMessage_' + marker.protoid + '" placeholder="Enter text/image url/youtube url" class="userMessageTextarea"></textarea><br>';
         contentString += '<input type="button" class="saveButton" onclick="SaveMessage(' + marker.protoid + ');" value="Submit for Approval">';
     } else {
         marker.likes = marker.likes ? marker.likes : 0;
@@ -365,7 +411,7 @@ function generateContentString(marker) {
             contentString += ((s.substring(0, 4) === "http") ? //Is this a web url?
             ( s.includes("youtube.com") ? //Is this a youtube video? (Note: images with the word youtube.com in it will fail)
             "<iframe width='400' height='300' src='" + s.replace("watch?v=", "embed/").replace("shorts/", "embed/") + "' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe><br>" //Add the video using an iframe
-            : "<embed width='400' height='300' src=\"" + s + "\"'><br>" //"<img src='" + s + "' alt='<embed src=\"" + s + "\">'><br>" //Just a regular image/gif
+            : "<iframe width='400' height='300' src=\"" + s + "\"'></iframe><br>" //"<img src='" + s + "' alt='<embed src=\"" + s + "\">'><br>" //Just a regular image/gif
             )
             : s + " "); //Not a webpage
         }
@@ -377,10 +423,16 @@ function generateContentString(marker) {
             contentString += '<input type="button" class="saveButton" onclick="Unlike(' + marker.id + ');" value="Unlike">';
         }
         contentString += '<br>';
+        if (marker.rejected) {
+            contentString += "<b>This message has been rejected! </b>"
+            contentString += "<br>" + "<b>Rejection reason: </b>";
+            contentString += marker.rejection_reason;
+            contentString += "<br>";
+        }
         if (admView) {
-            if (!marker.approved) {
+            if (!marker.approved && !marker.rejected) {
                 contentString += '<input type="button" class="saveButton" onclick="Approve(' + marker.id + ');" value="Approve">';
-            } else {
+            } else if (marker.approved) {
                 contentString += '<input type="button" class="saveButton" onclick="Unapprove(' + marker.id + ');" value="Unapprove">';
             }
             contentString += '<br>';
@@ -480,7 +532,7 @@ function LoadMarkers() {
     .then(data => {
         data.forEach(Message => {
             const position = new google.maps.LatLng(Message.latitude, Message.longitude);
-            placeMarker(position, Message.message, Message.id, Message.likes, Message.liked, Message.approved);
+            placeMarker(position, Message.message, Message.id, Message.likes, Message.liked, Message.approved, Message.rejected, Message.rejection_reason);
         });
     })
     .catch(error => {
