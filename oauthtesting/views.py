@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadReque
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.db import transaction
+from django.db.models import Q
 
 from django.apps import apps
 
@@ -288,7 +289,7 @@ def unapprove_marker(request, id):
 @login_required
 def load_markers(request):
     markers = TextMessage.objects.filter(
-        approved=True) if not request.user.is_superuser else TextMessage.objects.filter()
+        Q(approved=True) | Q(username=request.user.username)) if not request.user.is_superuser else TextMessage.objects.filter()
     markers_data = list(markers.values('id', 'latitude', 'longitude', 'message', 'approved', 'rejected', 'rejection_reason'))
     for x in markers_data:
         mk = TextMessage.objects.get(id=x['id'])
