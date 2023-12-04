@@ -22,6 +22,7 @@
                 <th scope="col"><a href="?sort=message">Message</a></th>
                 <th scope="col"><a href="?sort=time">Time</a></th>
                 <th scope="col"><a href="?sort=approved">Approve</a></th>
+                <th scope="col"><a href="?sort=rejected">Reject</a></th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +46,11 @@
                     <td>{{ message.time }}</td>
                     <td>
                         <input type="hidden" name="message_ids" value="{{ message.id }}">
-                        <input type="checkbox" name="approved_{{ message.id }}" value="true" {% if message.approved %} checked {% endif %}>
+                        <input type="checkbox" name="approved_{{ message.id }}" onclick="ensure_mutex({{ message.id }})" value="true" {% if message.approved %} checked {% endif %}>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="rejected_{{ message.id }}" onclick="ensure_mutex({{ message.id }})" value="true" {% if message.rejected %} checked {% endif %}>
+                        <input type="text" name="rejection_reason_{{ message.id }}" value="{{ message.rejection_reason }}">
                     </td>
                 </tr>
             {% empty %}
@@ -55,6 +60,18 @@
             {% endfor %}
         </tbody>
     </table>
+    <script>
+        function ensure_mutex(id) {
+            approved = document.getElementsByName("approved_" + id)[0].checked;
+            rejected = document.getElementsByName("rejected_" + id)[0].checked;
+            document.getElementsByName("rejected_" + id)[0].disabled = approved;
+            document.getElementsByName("rejection_reason_" + id)[0].disabled = approved;
+            document.getElementsByName("approved_" + id)[0].disabled = rejected;
+        }
+        {% for message in text_message_list %}
+        ensure_mutex({{ message.id }});
+        {% endfor %}
+    </script>
     <div class="d-flex justify-content-center">
         <button type="submit" class="btn btn-primary">Update Approvals</button>
     </div>

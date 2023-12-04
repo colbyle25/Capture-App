@@ -188,19 +188,16 @@ function getMarkerIcon(marker_id) {
     switch (marker_id) {
     case 0:
         return "https://maps.google.com/mapfiles/kml/shapes/info_circle.png";
-        break;
     case 1:
         return "https://maps.google.com/mapfiles/ms/icons/orange-dot.png";
-        break;
     case 2:
         return "https://maps.google.com/mapfiles/kml/shapes/arrow-reverse.png";
-        break;
     case 3:
         return "https://maps.google.com/mapfiles/kml/shapes/movies.png";
-        break;
     case 4:
         return "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
-        break;
+    case 6:
+        return "http://maps.google.com/mapfiles/kml/shapes/caution.png";
     }
     return "https://upload.wikimedia.org/wikipedia/commons/thumb/archive/d/dd/20170128002300%21University_of_Virginia_Rotunda_logo.svg/118px-University_of_Virginia_Rotunda_logo.svg.png";
 }
@@ -225,6 +222,8 @@ function placeNewMarker(location) {
         currentMarker.protoid = preid++;
         currentMarker.userMessage = "";
         currentMarker.approved = false;
+        currentMarker.rejected = false;
+        currentMarker.rejection_reason = false;
     }
     var marker = currentMarker;
 
@@ -234,7 +233,7 @@ function placeNewMarker(location) {
 }
 
 // Method for placing database markers.
-function placeMarker(location, message, id, likes, liked, approved) {
+function placeMarker(location, message, id, likes, liked, approved, rejected, rejection_reason) {
     console.log("Placing from db", id);
 
     var marker = new google.maps.Marker({
@@ -243,7 +242,8 @@ function placeMarker(location, message, id, likes, liked, approved) {
         draggable: false,
         // content: approved ? pinApproved : pinUnapproved,
     })
-    if (!approved) marker.setIcon({url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) });
+    if (!approved && !rejected) marker.setIcon({url: getMarkerIcon(0), scaledSize: new google.maps.Size(40, 40) });
+    else if (rejected) marker.setIcon({url: getMarkerIcon(6), scaledSize: new google.maps.Size(40, 40)});
     else if (message.includes("youtube.com")) marker.setIcon({url: getMarkerIcon(3), scaledSize: new google.maps.Size(40, 40) });
     else if (message.includes("http")) {
         message.split(" ").forEach(s => { if (s.substring(0, 4) === "http") marker.setIcon({url: s, scaledSize: new google.maps.Size(40, 40) }); })
@@ -259,6 +259,8 @@ function placeMarker(location, message, id, likes, liked, approved) {
     marker.likes = likes;
     marker.liked = liked;
     marker.approved = approved;
+    marker.rejected = rejected;
+    marker.rejection_reason = rejection_reason;
 
     handleWindowOpening(marker, location);
 
@@ -421,10 +423,16 @@ function generateContentString(marker) {
             contentString += '<input type="button" class="saveButton" onclick="Unlike(' + marker.id + ');" value="Unlike">';
         }
         contentString += '<br>';
+        if (marker.rejected) {
+            contentString += "<b>This message has been rejected! </b>"
+            contentString += "<br>" + "<b>Rejection reason: </b>";
+            contentString += marker.rejection_reason;
+            contentString += "<br>";
+        }
         if (admView) {
-            if (!marker.approved) {
+            if (!marker.approved && !marker.rejected) {
                 contentString += '<input type="button" class="saveButton" onclick="Approve(' + marker.id + ');" value="Approve">';
-            } else {
+            } else if (marker.approved) {
                 contentString += '<input type="button" class="saveButton" onclick="Unapprove(' + marker.id + ');" value="Unapprove">';
             }
             contentString += '<br>';
@@ -524,7 +532,7 @@ function LoadMarkers() {
     .then(data => {
         data.forEach(Message => {
             const position = new google.maps.LatLng(Message.latitude, Message.longitude);
-            placeMarker(position, Message.message, Message.id, Message.likes, Message.liked, Message.approved);
+            placeMarker(position, Message.message, Message.id, Message.likes, Message.liked, Message.approved, Message.rejected, Message.rejection_reason);
         });
     })
     .catch(error => {
