@@ -6,7 +6,11 @@
 
 {% load socialaccount %}
 {% providers_media_js %}
-
+{% if account %}
+<title>{{ account.username }}</title>
+{% else %}
+<title>Account Not Found</title>
+{% endif %}
 <div class="account-table-div">
     {% if account %}
         <table class="account-table">
