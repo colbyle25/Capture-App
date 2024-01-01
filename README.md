@@ -1,8 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/xHnRfY9D)
-# Capture Game
+Welcome to the Capture App! This is a social environment game for students at the University of Virginia. Across Grounds, there are numerous famous UVA landmarks that users can claim and earn points, which they can spend on customization options and message tickets. Users can then use the message tickets to submit messages, images, or even videos to the Map, which other users can stumble upon. There are also social media functions, such as an account lookup and Leaderboard.
 
-__Name:__
-
-__Computing ID:__
-
-# Note about our questoinnaire answers. We initially wanted to collect anonymous data as it would provide more honest responses. We didn't realize that the instructions required the participants names ot be recorded. As a result, we're missing a few of the initial respodent's names. 
+This web app uses Django for the MVC design, and we host on Heroku. The link is at https://cs3240-capture-4ce49bc5c8b7.herokuapp.com/ (this temporarily is down).
