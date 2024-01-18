@@ -36,7 +36,7 @@ is_HA = ("DYNO" in os.environ and not "CI" in os.environ)
 #   DEBUG = True
 #else:
 #    DEBUG = False
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
