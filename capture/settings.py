@@ -116,6 +116,9 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    
+import dj_database_url
+DATABASES['default'] = dj_database_url.config(default='sqlite://db/sqlite3.db')
 
 
 # Media Files
@@ -208,3 +211,13 @@ GOOGLE_MAPS_API_KEY = 'AIzaSyCHO1XcQLlUn6V7sRyRzKDzrzBGl7h97F0'
 
 if is_HA:
     SECURE_SSL_REDIRECT = True
+
+# Activate Django-Heroku.
+# Use this code to avoid the psycopg2 / django-heroku error!  
+# Do NOT import django-heroku above!
+try:
+    if 'HEROKU' in os.environ:
+        import django_heroku
+        django_heroku.settings(locals())
+except ImportError:
+    found = False
