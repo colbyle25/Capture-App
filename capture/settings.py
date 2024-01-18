@@ -32,10 +32,11 @@ SECRET_KEY = os.environ.get(
 
 is_HA = ("DYNO" in os.environ and not "CI" in os.environ)
 
-if not is_HA:
-    DEBUG = True
-else:
-    DEBUG = False
+#if not is_HA:
+#   DEBUG = True
+#else:
+#    DEBUG = False
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
